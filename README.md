@@ -9,7 +9,7 @@ This website is designed for MyPFE 14.0, a leading job fair organized by the Fac
 ## 📋 Event Details
 
 - **Event**: Make Your Professional Future Efficient 14.0
-- **Date**: November 17, 2025
+- **Date**: November 22, 2025
 - **Location**: Faculty of Sciences of Sfax, Tunisia
 - **Expected Attendees**: 350+ students
 - **Companies**: 20+ participating companies
