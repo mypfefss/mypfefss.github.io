@@ -189,31 +189,75 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Registration Form Handling
 function handleRegistration(form) {
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Collect form data
-        const formData = new FormData(form);
-        const registrationData = Object.fromEntries(formData.entries());
+        // Get the submit button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
         
-        // Handle multiple workshop selections
-        const workshops = formData.getAll('workshops');
-        registrationData.workshops = workshops;
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.style.opacity = '0.7';
         
-        console.log('Registration Data:', registrationData);
-        
-        // Show success message
-        showSuccessMessage('Registration submitted successfully! We will contact you soon.');
-        
-        // Close modal
-        const modal = document.getElementById('registrationModal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+        try {
+            // Collect form data
+            const formData = new FormData(form);
+            const registrationData = Object.fromEntries(formData.entries());
+            
+            // Handle multiple workshop selections
+            const workshops = formData.getAll('workshops');
+            registrationData.workshops = workshops;
+            
+            console.log('Submitting Registration Data:', registrationData);
+            
+            // Get Google Script URL from config
+            const GOOGLE_SCRIPT_URL = typeof CONFIG !== 'undefined' ? CONFIG.STUDENT_SCRIPT_URL : 'YOUR_STUDENT_SCRIPT_URL_HERE';
+            
+            // Check if URL is configured
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_STUDENT_SCRIPT_URL_HERE') {
+                console.error('Student Script URL not configured! Please update assets/js/config.js');
+                throw new Error('Configuration required');
+            }
+            
+            // Send data to Google Sheets
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Important for Google Apps Script
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(registrationData)
+            });
+            
+            // Note: With 'no-cors' mode, we can't read the response
+            // but if no error is thrown, the request was sent successfully
+            
+            console.log('Registration submitted successfully');
+            
+            // Show success message
+            showSuccessMessage('Registration submitted successfully! We will contact you soon.');
+            
+            // Close modal
+            const modal = document.getElementById('registrationModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Reset form
+            form.reset();
+            
+        } catch (error) {
+            console.error('Error submitting registration:', error);
+            showErrorMessage('There was an error submitting your registration. Please try again or contact us directly.');
+        } finally {
+            // Restore button state
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            submitBtn.style.opacity = '1';
         }
-        
-        // Reset form
-        form.reset();
     });
 }
 
@@ -239,11 +283,11 @@ function handlePartnershipForm(form) {
             console.log('Submitting Partnership Data:', partnershipData);
             
             // Get Google Script URL from config
-            const GOOGLE_SCRIPT_URL = typeof CONFIG !== 'undefined' ? CONFIG.GOOGLE_SCRIPT_URL : 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+            const GOOGLE_SCRIPT_URL = typeof CONFIG !== 'undefined' ? CONFIG.PARTNER_SCRIPT_URL : 'YOUR_PARTNER_SCRIPT_URL_HERE';
             
             // Check if URL is configured
-            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
-                console.error('Google Script URL not configured! Please update assets/js/config.js');
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_PARTNER_SCRIPT_URL_HERE') {
+                console.error('Partner Script URL not configured! Please update assets/js/config.js');
                 throw new Error('Configuration required');
             }
             
