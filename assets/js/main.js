@@ -219,25 +219,71 @@ function handleRegistration(form) {
 
 // Partnership Form Handling
 function handlePartnershipForm(form) {
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const formData = new FormData(form);
-        const partnershipData = Object.fromEntries(formData.entries());
+        // Get the submit button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
         
-        console.log('Partnership Data:', partnershipData);
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.style.opacity = '0.7';
         
-        showSuccessMessage('Partnership request submitted successfully! We will contact you soon to discuss the details.');
-        
-        // Reset form
-        form.reset();
+        try {
+            // Collect form data
+            const formData = new FormData(form);
+            const partnershipData = Object.fromEntries(formData.entries());
+            
+            console.log('Submitting Partnership Data:', partnershipData);
+            
+            // Get Google Script URL from config
+            const GOOGLE_SCRIPT_URL = typeof CONFIG !== 'undefined' ? CONFIG.GOOGLE_SCRIPT_URL : 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+            
+            // Check if URL is configured
+            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                console.error('Google Script URL not configured! Please update assets/js/config.js');
+                throw new Error('Configuration required');
+            }
+            
+            // Send data to Google Sheets
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Important for Google Apps Script
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(partnershipData)
+            });
+            
+            // Note: With 'no-cors' mode, we can't read the response
+            // but if no error is thrown, the request was sent successfully
+            
+            console.log('Form submitted successfully');
+            
+            // Show success message
+            showSuccessMessage('Partnership request submitted successfully! We will contact you soon to discuss the details.');
+            
+            // Reset form
+            form.reset();
+            
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            showErrorMessage('There was an error submitting your request. Please try again or contact us directly.');
+        } finally {
+            // Restore button state
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            submitBtn.style.opacity = '1';
+        }
     });
 }
 
 // Success Message Display
 function showSuccessMessage(message) {
     // Remove existing messages
-    const existingMessages = document.querySelectorAll('.success-message');
+    const existingMessages = document.querySelectorAll('.success-message, .error-message');
     existingMessages.forEach(msg => msg.remove());
     
     // Create success message
@@ -270,6 +316,46 @@ function showSuccessMessage(message) {
         successDiv.style.transform = 'translateX(100%)';
         setTimeout(() => {
             successDiv.remove();
+        }, 300);
+    }, 5000);
+}
+
+// Error Message Display
+function showErrorMessage(message) {
+    // Remove existing messages
+    const existingMessages = document.querySelectorAll('.success-message, .error-message');
+    existingMessages.forEach(msg => msg.remove());
+    
+    // Create error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ef4444;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        z-index: 2001;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    errorDiv.textContent = message;
+    
+    document.body.appendChild(errorDiv);
+    
+    // Animate in
+    setTimeout(() => {
+        errorDiv.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        errorDiv.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            errorDiv.remove();
         }, 300);
     }, 5000);
 }
