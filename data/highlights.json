@@ -1,39 +1,8 @@
 {
   "highlights": [
-    {
-      "id": 1,
-      "time": "9:00 - 9:45",
-      "title": "Opening Ceremony",
-      "description": "Welcome address and event overview",
-      "category": "ceremony"
-    },
-    {
-      "id": 2,
-      "time": "10:15 - 11:45",
-      "title": "Technical Workshops",
-      "description": "Hands-on sessions on latest technologies",
-      "category": "workshop"
-    },
-    {
-      "id": 3,
-      "time": "13:45 - 15:15",
-      "title": "Company Booths",
-      "description": "Explore opportunities and network",
-      "category": "networking"
-    },
-    {
-      "id": 4,
-      "time": "15:45 - 16:30",
-      "title": "Partner Workshops",
-      "description": "Special sessions by industry partners",
-      "category": "workshop"
-    },
-    {
-      "id": 5,
-      "time": "Comming soon",
-      "title": "Activity",
-      "description": "Awards and closing remarks",
-      "category": "ceremony"
-    }
+    { "id": 1, "time": "9:00 - 9:45",   "title": "Opening Ceremony",  "description": "Welcome and event overview",     "category": "ceremony",   "icon": "fas fa-microphone" },
+    { "id": 2, "time": "10:15 - 11:45", "title": "Technical Workshops", "description": "Hands-on sessions",            "category": "workshop",   "icon": "fas fa-laptop-code" },
+    { "id": 3, "time": "13:45 - 15:15", "title": "Company Booths",    "description": "Meet recruiters and network",    "category": "networking", "icon": "fas fa-handshake" },
+    { "id": 4, "time": "15:45 - 16:30", "title": "Partner Workshops", "description": "Sessions led by our partners",   "category": "workshop",   "icon": "fas fa-users-gear" }
   ]
 }

@@ -1,0 +1,99 @@
+<div class="modal" id="registrationModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Student Registration</h3>
+            <span class="close" id="closeModal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form class="registration-form" id="registrationForm" enctype="multipart/form-data">
+                <!-- Honeypot – hidden from real users, bots fill it -->
+                <div style="display:none" aria-hidden="true">
+                    <label for="website">Leave this empty</label>
+                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="form-section">
+                    <h4>Personal Information</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" required maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" required maxlength="100">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required maxlength="254">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required minlength="6" maxlength="20">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section" id="academicSection">
+                    <h4>Academic Information</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="university">University/Institution *</label>
+                            <input type="text" id="university" name="university" required maxlength="200">
+                        </div>
+                        <div class="form-group">
+                            <label for="field">Field of Study</label>
+                            <input type="text" id="field" name="field" maxlength="200" placeholder="e.g. Computer Science">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="level">Academic Level *</label>
+                            <select id="level" name="level" required>
+                                <option value="">Select your level</option>
+                                <option value="license-1">License 1</option>
+                                <option value="license-2">License 2</option>
+                                <option value="license-3">License 3</option>
+                                <option value="master-1">Master 1</option>
+                                <option value="master-2">Master 2</option>
+                                <option value="engineering">Engineering Student</option>
+                                <option value="phd">PhD Student</option>
+                                <option value="graduate">Recent Graduate</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="experience">Work Experience</label>
+                            <select id="experience" name="experience">
+                                <option value="">Select…</option>
+                                <option value="none">No experience</option>
+                                <option value="internship">Internship</option>
+                                <option value="part-time">Part-time</option>
+                                <option value="full-time">Full-time</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- CV upload – students only -->
+                    <div class="form-group" id="cvSection">
+                        <label for="cv">CV (PDF, max 2 MB)</label>
+                        <input type="file" id="cv" name="cv" accept=".pdf,application/pdf">
+                        <small id="cvError" style="color:#ef4444;display:none;"></small>
+                        <div class="form-group" id="cvConsentGroup" style="margin-top:.5rem;display:none;">
+                            <label style="display:flex;align-items:flex-start;gap:.5rem;font-weight:400;font-size:.875rem;cursor:pointer;">
+                                <input type="checkbox" id="cv_consent" name="cv_consent" value="true" style="margin-top:2px;accent-color:var(--primary-color);">
+                                I consent to MyPFE storing my CV to share with partner companies for recruitment purposes.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancelRegistration">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Complete Registration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -111,20 +111,6 @@ The website is fully responsive and optimized for:
 - **Focus**: Google development technologies
 - **Community**: University-based student group
 
-## 📞 Contact Information
-
-### Event Organizers
-- **Med Yassine Abid** - Event Chair
-  - Email: abid.mohamed.yassine@ieee.org
-  - Phone: +216 28 592 003
-
-- **Emna Mnejja** - Logistics Manager
-  - Email: emnamnejja1808@mail.com
-  - Phone: +216 99 332 442
-
-- **Habib M. Kammoun** - Department Head
-  - Email: habib.kammoun@ieee.org
-
 ## 🚀 Getting Started
 
 1. **Open the website**: Simply open `index.html` in your web browser

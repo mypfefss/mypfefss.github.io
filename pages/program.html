@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program - MyPFE 14.0</title>
-    <meta name="description" content="Discover the comprehensive program of MyPFE 14.0 featuring workshops, technical sessions, company booths, and networking opportunities.">
+    <title>Program - MyPFE 15.0</title>
+    <meta name="description" content="Schedule and workshops of MyPFE 15.0, November 21, 2026.">
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/polish.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -14,8 +15,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <img src="../assets/images/Vector (1).png" alt="MyPFE 14.0" class="logo">
-                <!-- <span class="logo-text">MyPFE 14.0</span> -->
+                <img src="../assets/images/MYPFE15_LOGO1_black.png" alt="MyPFE 15.0" class="logo">
             </div>
             <div class="nav-menu" id="nav-menu">
                 <a href="../index.html" class="nav-link">Home</a>
@@ -37,95 +37,55 @@
     <section class="page-header">
         <div class="container">
             <div class="header-content scroll-reveal">
-                <h1 class="text-reveal">Event Program</h1>
-                <p class="text-reveal">A comprehensive day of learning, networking, and career opportunities</p>
-                
+                <h1>Event <span class="highlight">Program</span></h1>
+                <p>Saturday, November 21, 2026 · Faculty of Sciences of Sfax</p>
             </div>
         </div>
     </section>
 
-    
-
-    <!-- Event Info -->
-    <section class="event-info">
+    <!-- Schedule (this year) -->
+    <section class="detailed-schedule tl-section">
         <div class="container">
-            <div class="info-cards">
-                <div class="info-card scroll-reveal">
-                    <i class="fas fa-calendar-alt"></i>
-                    <h3>November 22, 2025</h3>
-                    <p>Saturday</p>
-                </div>
-                <div class="info-card scroll-reveal">
-                    <i class="fas fa-clock"></i>
-                    <h3>8:00 AM - 5:00 PM</h3>
-                    <p>Full Day Event</p>
-                </div>
-                <div class="info-card scroll-reveal">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <h3>Faculty of Sciences</h3>
-                    <p>Sfax, Tunisia</p>
-                </div>
-                <div class="info-card scroll-reveal">
-                    <i class="fas fa-users"></i>
-                    <h3>350+ Attendees</h3>
-                    <p>Expected Participation</p>
-                </div>
+            <div class="section-header">
+                <h2>Schedule</h2>
+            </div>
+            <div class="tl" id="timeline" aria-live="polite">
+                <p class="tl-empty">Loading schedule…</p>
             </div>
         </div>
     </section>
 
-    <!-- Detailed Schedule -->
-    <section class="detailed-schedule">
+    <!-- Last edition, for reference -->
+    <section class="tl-section tl-past">
         <div class="container">
-            <div class="section-header scroll-reveal">
-                <h2 class="text-reveal">Detailed Schedule</h2>
-                <p class="text-reveal">Your complete guide to MyPFE 14.0 activities and sessions</p>
+            <div class="section-header">
+                <span class="tl-badge">Last edition</span>
+                <h2 id="pastTitle">MyPFE 14.0</h2>
+                <p id="pastMeta"></p>
             </div>
-            
-            <!-- Schedule will be loaded from JSON -->
-            <div class="schedule-timeline schedule-list">
-                <!-- Schedule items will be loaded here by JavaScript -->
-            </div>
+            <div class="tl" id="timelinePast"></div>
         </div>
     </section>
 
-    <!-- Workshop Details -->
+    <!-- Workshops (rendered by main.js into .workshops-grid) -->
     <section class="workshop-details">
         <div class="container">
-            <div class="section-header scroll-reveal">
-                <h2 class="text-reveal">Featured Workshops</h2>
-                <p class="text-reveal">Deep dive into the technical sessions and learning opportunities</p>
+            <div class="section-header">
+                <h2>Workshops</h2>
             </div>
-            
-            <div class="workshops-grid">
-                <!-- Workshop cards will be loaded from JSON -->
-            </div>
+            <div class="workshops-grid"></div>
         </div>
     </section>
 
-    <!-- Registration CTA -->
-    <section class="registration-cta">
+    <!-- CTA -->
+    <section class="cta">
         <div class="container">
             <div class="cta-content">
-                <h2>Ready to Join MyPFE 14.0?</h2>
-                <p>Don't miss this opportunity to advance your career and connect with industry leaders</p>
-                <div class="cta-stats">
-                    <div class="cta-stat">
-                        <span class="number">5+</span>
-                        <span class="label">Technical Workshops</span>
-                    </div>
-                    <div class="cta-stat">
-                        <span class="number">20+</span>
-                        <span class="label">Company Booths</span>
-                    </div>
-                    <div class="cta-stat">
-                        <span class="number">8</span>
-                        <span class="label">Hours of Networking</span>
-                    </div>
-                </div>
+                <h2>Join MyPFE 15.0</h2>
+                <p>November 21, 2026 · Faculty of Sciences of Sfax</p>
                 <div class="cta-buttons">
-                    <a href="contact.html" class="btn btn-primary">Register Now</a>
-                    <a href="../index.html" class="btn btn-outline">Learn More</a>
+                    <button class="btn btn-primary register-btn" data-type="student">Register Now</button>
+                    <a href="sponsors.html" class="btn btn-outline">Become a Partner</a>
                 </div>
             </div>
         </div>
@@ -136,20 +96,12 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>MyPFE 14.0</h4>
-                    <p>Make Your Professional Future Efficient - The annual gathering bringing together students and industry professionals.</p>
+                    <h4>Follow us</h4>
                     <div class="social-links">
-                        <a href="https://www.facebook.com/dic.fss" target="_blank"><i class="fab fa-facebook"></i></a>
-                        <a href="https://www.linkedin.com/company/dic-fss" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.instagram.com/mypfe_fss/" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/dic.fss" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.linkedin.com/company/dic-fss" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/mypfe_fss/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <a href="about.html">About</a>
-                    <a href="program.html">Program</a>
-                    <a href="sponsors.html">Partners</a>
-                    <a href="contact.html">Contact</a>
                 </div>
                 <div class="footer-section">
                     <h4>Contact Info</h4>
@@ -158,156 +110,85 @@
                 </div>
                 <div class="footer-section">
                     <h4>Organizers</h4>
-                    <a href="#">IEEE FSS Student Branch</a>
-                    <a href="#">CPC FSS</a>
-                    <a href="#">GDG on Campus FSS</a>
-                    <a href="#">Computer Science and Communications Department @FSS</a>
+                    <p>IEEE FSS Student Branch</p>
+                    <p>CPC FSS</p>
+                    <p>GDG on Campus FSS</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 MyPFE 14.0. All rights reserved.</p>
+                <p>&copy; 2026 MyPFE 15.0. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Registration Form Modal -->
-    <div class="modal" id="registrationModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Student Registration</h3>
-                <span class="close" id="closeModal">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form class="registration-form" id="registrationForm">
-                    <div class="form-section">
-                        <h4>Personal Information</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="firstName">First Name *</label>
-                                <input type="text" id="firstName" name="firstName" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="lastName">Last Name *</label>
-                                <input type="text" id="lastName" name="lastName" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="email">Email Address *</label>
-                                <input type="email" id="email" name="email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">Phone Number *</label>
-                                <input type="tel" id="phone" name="phone" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section" id="academicSection">
-                        <h4>Academic Information</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="university">University/Institution *</label>
-                                <input type="text" id="university" name="university" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="field">Field of Study *</label>
-                                <select id="field" name="field" required>
-                                    <option value="">Select your field</option>
-                                    <option value="computer-science">Computer Science</option>
-                                    <option value="software-engineering">Software Engineering</option>
-                                    <option value="data-science">Data Science</option>
-                                    <option value="cybersecurity">Cybersecurity</option>
-                                    <option value="ai-ml">AI & Machine Learning</option>
-                                    <option value="networks">Networks & Telecommunications</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="level">Academic Level *</label>
-                                <select id="level" name="level" required>
-                                    <option value="">Select your level</option>
-                                    <option value="license-1">License 1</option>
-                                    <option value="license-2">License 2</option>
-                                    <option value="license-3">License 3</option>
-                                    <option value="master-1">Master 1</option>
-                                    <option value="master-2">Master 2</option>
-                                    <option value="engineering">Engineering Student</option>
-                                    <option value="phd">PhD Student</option>
-                                    <option value="graduate">Recent Graduate</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="graduation">Expected Graduation</label>
-                                <input type="month" id="graduation" name="graduation">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h4>Workshop Preferences</h4>
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="workshops" value="ai-ml">
-                                <span class="checkmark"></span>
-                                AI & Machine Learning
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="workshops" value="web-dev">
-                                <span class="checkmark"></span>
-                                Web Development
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="workshops" value="mobile-dev">
-                                <span class="checkmark"></span>
-                                Mobile Development
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="workshops" value="cybersecurity">
-                                <span class="checkmark"></span>
-                                Cybersecurity
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="workshops" value="cloud-computing">
-                                <span class="checkmark"></span>
-                                Cloud Computing
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="workshops" value="data-science">
-                                <span class="checkmark"></span>
-                                Data Science
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h4>Additional Information</h4>
-                        <div class="form-group">
-                            <label for="interests">Career Interests</label>
-                            <textarea id="interests" name="interests" rows="3" placeholder="Tell us about your career goals and interests..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="experience">Experience Level</label>
-                            <select id="experience" name="experience">
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-outline" id="cancelRegistration">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Complete Registration</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- Registration modal is injected by main.js from assets/html/modal.html -->
 
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/main.js"></script>
+    <script>
+        // Timeline renderer: tries API first, falls back to local JSON.
+        const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+        function renderItem(it) {
+            const sections = (it.sections || []).map(sec => `
+                <div class="tl-group">
+                    ${sec.label ? `<div class="tl-label">${esc(sec.label)}</div>` : ''}
+                    <ul class="tl-lines">
+                        ${(sec.lines || []).map(l => {
+                            const o = typeof l === 'string' ? { text: l } : l;
+                            return `<li><span class="tl-line-main"><strong>${esc(o.text)}</strong>${o.sub ? `<small>${esc(o.sub)}</small>` : ''}</span>${o.meta ? `<span class="tl-meta">${esc(o.meta)}</span>` : ''}</li>`;
+                        }).join('')}
+                    </ul>
+                </div>`).join('');
+            const chips = it.chips ? `<div class="tl-chips">${it.chips.map(c => `<span>${esc(c)}</span>`).join('')}</div>` : '';
+            const speaker = it.speaker ? `<div class="tl-speaker"><i class="fas fa-user-tie"></i> <strong>${esc(it.speaker.name)}</strong>${it.speaker.company ? ' · ' + esc(it.speaker.company) : ''}</div>` : '';
+            return `
+                <article class="tl-item${it.featured ? ' featured' : ''}">
+                    <div class="tl-time">${esc(it.time || 'TBA')}</div>
+                    <div class="tl-card">
+                        <h3>${esc(it.title)}</h3>
+                        ${it.description ? `<p>${esc(it.description)}</p>` : ''}
+                        ${speaker}${sections}${chips}
+                        ${it.location ? `<span class="tl-place"><i class="fas fa-map-marker-alt"></i> ${esc(it.location)}</span>` : ''}
+                    </div>
+                </article>`;
+        }
+
+        // Try API_BASE first, fall back to local file
+        async function loadTimeline(apiPath, fallbackUrl, boxId, emptyMsg) {
+            const box = document.getElementById(boxId);
+            let data = null;
+
+            // 1. Try API
+            const base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+            if (base) {
+                try {
+                    const res = await fetch(base + apiPath, { headers: { 'Cache-Control': 'no-cache' } });
+                    if (res.ok) data = await res.json();
+                } catch (_) {}
+            }
+
+            // 2. Fall back to local JSON
+            if (!data) {
+                try {
+                    const res = await fetch(fallbackUrl);
+                    if (res.ok) data = await res.json();
+                } catch (_) {}
+            }
+
+            if (!data) { box.innerHTML = `<p class="tl-empty">${emptyMsg}</p>`; return null; }
+            const items = data.schedule || [];
+            if (!items.length) { box.innerHTML = `<p class="tl-empty">${emptyMsg}</p>`; return data; }
+            box.innerHTML = items.map(renderItem).join('');
+            return data;
+        }
+
+        loadTimeline('/api/v1/schedule', '../data/schedule.json', 'timeline', 'Schedule coming soon.');
+        loadTimeline(null, '../data/schedule-2025.json', 'timelinePast', 'Not available.').then(d => {
+            if (!d) { document.querySelector('.tl-past').style.display = 'none'; return; }
+            document.getElementById('pastTitle').textContent = d.edition || 'Last edition';
+            document.getElementById('pastMeta').textContent = [d.date, d.location].filter(Boolean).join(' · ');
+        });
+    </script>
 </body>
 </html>

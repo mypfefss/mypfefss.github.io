@@ -1,0 +1,83 @@
+{
+  "edition": "MyPFE 14.0",
+  "date": "Saturday, November 22, 2025",
+  "location": "Amphi 9, Computer Science and Communications Department",
+  "schedule": [
+    {
+      "time": "9:00",
+      "title": "Opening",
+      "sections": [
+        { "lines": [
+          { "text": "Habib M. Kammoun", "sub": "Head, Computer Science and Communications Department" },
+          { "text": "Prof. Abdallah Chehaidar", "sub": "Dean, Faculty of Sciences" },
+          { "text": "Prof. Ahmed Hadj Kacem", "sub": "President, University of Sfax" }
+        ]}
+      ]
+    },
+    {
+      "time": "9:20",
+      "title": "Panel Discussion",
+      "description": "The Future of Jobs in the Era of AI: how to succeed in your professional career?",
+      "featured": true,
+      "sections": [
+        { "label": "Moderator", "lines": [
+          { "text": "Mohamed Belhaj", "sub": "Entrepreneurship Expert" }
+        ]},
+        { "label": "Panelists", "lines": [
+          { "text": "Mustapha Mezghani", "sub": "CEO, Sfax Technopark" },
+          { "text": "Walid Ben Ayed", "sub": "Head of the Engineering Training Office, Tunisian Engineers Order" },
+          { "text": "Anis Samet", "sub": "IT Entrepreneurs and Leaders group, CONECT" }
+        ]}
+      ]
+    },
+    {
+      "time": "10:00",
+      "title": "Talks",
+      "sections": [
+        { "lines": [
+          { "text": "Sfax Technopark Supports Innovations", "sub": "Mustapha Mezghani, CEO", "meta": "15 min" },
+          { "text": "Erasmus+ Students Mobility", "sub": "Nesrine Baklouti, Erasmus+ TN Office Director", "meta": "15 min" },
+          { "text": "Artificial Intelligence for CyberSecurity", "sub": "Sami Sahraoui, Protected Consulting Manager", "meta": "20 min" }
+        ]}
+      ]
+    },
+    {
+      "time": "10:00 – 13:00",
+      "title": "Company Booths",
+      "chips": ["Yuma", "Devoteam", "Piximind", "Infosquare", "PROGED Solutions", "Protected Consulting"]
+    },
+    {
+      "time": "11:00",
+      "title": "Networking & Coffee Break"
+    },
+    {
+      "time": "11:30",
+      "title": "Company Activities & Internship Opportunities",
+      "sections": [
+        { "lines": [
+          { "text": "I-WAY", "sub": "Mohamed Guermazi, CTO", "meta": "10 min" },
+          { "text": "OliveSoft", "sub": "Emna Kotti, HR Business Partner", "meta": "10 min" },
+          { "text": "Yuma", "sub": "Mariem Amini, Training and Academic Partnerships Coordinator", "meta": "15 min" },
+          { "text": "Hydatis", "sub": "Boudour Ammar, Academic Advisor", "meta": "15 min" },
+          { "text": "Devoteam", "sub": "Aymen Metoui, HR Business Partner", "meta": "15 min" },
+          { "text": "Smartvisor", "sub": "Amal Krichen & Ameni Krichen, AI Engineers", "meta": "10 min" },
+          { "text": "Infosquare", "sub": "Nizar Ellouze, CEO", "meta": "10 min" },
+          { "text": "PROGED Solutions", "sub": "Oumayma Messaoudi, Recruitment Manager", "meta": "10 min" },
+          { "text": "Be Wireless Solutions", "sub": "Karim Kharrat, CEO", "meta": "5 min" },
+          { "text": "Piximind", "sub": "Zaher Kammoun, HR Manager", "meta": "10 min" }
+        ]}
+      ]
+    },
+    {
+      "time": "13:30",
+      "title": "Technical Workshops",
+      "sections": [
+        { "lines": [
+          { "text": "UX/UI Design", "sub": "Aziza Mezghani, Piximind", "meta": "30 min" },
+          { "text": "Tutorial on React Native", "sub": "Mohamed Amine Yaich, Piximind", "meta": "30 min" },
+          { "text": "CV Development and Job Interview", "sub": "Zaher Kammoun, Piximind", "meta": "30 min" }
+        ]}
+      ]
+    }
+  ]
+}

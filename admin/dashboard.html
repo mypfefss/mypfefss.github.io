@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPFE Admin — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ── Sidebar ─────────────────────────────────────────────────────────────── -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="../assets/images/MYPFE15_LOGO2_white.png" alt="MyPFE">
+  </div>
+  <ul class="sidebar-nav">
+    <li><a href="#" class="nav-item active" data-tab="schedule"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+    <li><a href="#" class="nav-item" data-tab="workshops"><i class="fas fa-chalkboard-teacher"></i> Workshops</a></li>
+    <li><a href="#" class="nav-item" data-tab="registrations"><i class="fas fa-users"></i> Registrations</a></li>
+    <li><a href="#" class="nav-item admin-only" data-tab="users" style="display:none"><i class="fas fa-user-shield"></i> Users</a></li>
+  </ul>
+  <div class="sidebar-footer">
+    <span id="meEmail" class="me-email"></span>
+    <button id="logoutBtn" class="btn-ghost"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</nav>
+
+<!-- ── Main ────────────────────────────────────────────────────────────────── -->
+<main class="main-content">
+
+  <!-- ── Schedule tab ──────────────────────────────────────────────────────── -->
+  <section id="tab-schedule" class="tab-section">
+    <div class="tab-header">
+      <h2>Schedule</h2>
+      <button class="btn-primary" id="addScheduleBtn"><i class="fas fa-plus"></i> Add Item</button>
+    </div>
+    <div id="scheduleList" class="item-list"></div>
+  </section>
+
+  <!-- ── Workshops tab ─────────────────────────────────────────────────────── -->
+  <section id="tab-workshops" class="tab-section" hidden>
+    <div class="tab-header">
+      <h2>Workshops</h2>
+      <button class="btn-primary" id="addWorkshopBtn"><i class="fas fa-plus"></i> Add Workshop</button>
+    </div>
+    <div id="workshopList" class="item-list"></div>
+  </section>
+
+  <!-- ── Registrations tab ─────────────────────────────────────────────────── -->
+  <section id="tab-registrations" class="tab-section" hidden>
+    <div class="tab-header">
+      <h2>Registrations</h2>
+      <button class="btn-outline admin-only" id="exportCsvBtn" style="display:none"><i class="fas fa-download"></i> Export CSV</button>
+    </div>
+
+    <!-- Stats panel -->
+    <div id="statsPanel" class="stats-panel">
+      <div class="stat-box"><span id="statTotal">—</span><small>Total</small></div>
+      <div class="stat-box"><span id="statStudents">—</span><small>Students</small></div>
+      <div class="stat-box"><span id="statCompanies">—</span><small>Companies</small></div>
+      <div class="stat-box"><span id="statCvs">—</span><small>With CV</small></div>
+    </div>
+
+    <!-- Bar chart (plain SVG) -->
+    <div id="chartWrap" class="chart-wrap">
+      <svg id="barChart" class="bar-chart"></svg>
+    </div>
+
+    <!-- Breakdown panels -->
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <div class="chart-wrap" style="flex:1;min-width:220px;">
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem;">By Level</div>
+        <div id="levelBreakdown"></div>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:220px;">
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem;">Top Universities</div>
+        <div id="topUniversities"></div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <input type="search" id="regSearch" placeholder="Search name, email, university…" class="search-input">
+      <select id="regType" class="filter-select">
+        <option value="">All types</option>
+        <option value="student">Student</option>
+        <option value="company">Company</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table id="regTable" class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th><th>Email</th><th>Type</th><th>University</th>
+            <th>Level</th><th>CV</th><th>Date</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="regBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="regPagination"></div>
+  </section>
+
+  <!-- ── Users tab ─────────────────────────────────────────────────────────── -->
+  <section id="tab-users" class="tab-section" hidden>
+    <div class="tab-header">
+      <h2>Users</h2>
+      <button class="btn-primary" id="addUserBtn"><i class="fas fa-plus"></i> Add Editor</button>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Email</th><th>Role</th><th>Active</th><th>Created</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="userBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════ MODALS ══════════════ -->
+
+<!-- Schedule form modal -->
+<div id="scheduleModal" class="modal" hidden>
+  <div class="modal-box modal-lg">
+    <div class="modal-head">
+      <h3 id="scheduleModalTitle">Add Schedule Item</h3>
+      <button class="modal-close" data-close="scheduleModal">&times;</button>
+    </div>
+    <div class="modal-body two-col">
+      <!-- Left: form -->
+      <form id="scheduleForm" class="modal-form">
+        <div class="field-row">
+          <div class="field">
+            <label>Time *</label>
+            <input type="text" name="time" placeholder="9:00 or 10:00 – 13:00" required maxlength="50">
+          </div>
+          <div class="field">
+            <label>Location</label>
+            <input type="text" name="location" maxlength="200">
+          </div>
+        </div>
+        <div class="field">
+          <label>Title *</label>
+          <input type="text" name="title" required maxlength="200">
+        </div>
+        <div class="field">
+          <label>Description</label>
+          <textarea name="description" rows="2" maxlength="1000"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Speaker name</label>
+            <input type="text" name="speaker_name" maxlength="200">
+          </div>
+          <div class="field">
+            <label>Speaker company</label>
+            <input type="text" name="speaker_company" maxlength="200">
+          </div>
+        </div>
+        <div class="field-row">
+          <label class="check-label"><input type="checkbox" name="featured"> Featured</label>
+          <label class="check-label"><input type="checkbox" name="is_published" checked> Published</label>
+          <div class="field" style="flex:1">
+            <label>Position</label>
+            <input type="number" name="position" value="0" min="0">
+          </div>
+        </div>
+
+        <!-- Chips -->
+        <div class="field">
+          <label>Chips (comma-separated)</label>
+          <input type="text" name="chips_raw" placeholder="Tag1, Tag2, Tag3">
+        </div>
+
+        <!-- Sections repeater -->
+        <div class="field">
+          <label>Sections <button type="button" class="btn-ghost btn-sm" id="addSectionBtn">+ Add section</button></label>
+          <div id="sectionsContainer"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" data-close="scheduleModal">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
+
+      <!-- Right: live preview -->
+      <div class="preview-col">
+        <div class="preview-label">Preview</div>
+        <div id="schedulePreview" class="tl-preview"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Workshop form modal -->
+<div id="workshopModal" class="modal" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="workshopModalTitle">Add Workshop</h3>
+      <button class="modal-close" data-close="workshopModal">&times;</button>
+    </div>
+    <form id="workshopForm" class="modal-form">
+      <div class="field">
+        <label>Icon class *</label>
+        <input type="text" name="icon" value="fas fa-clock" required maxlength="100">
+      </div>
+      <div class="field">
+        <label>Title *</label>
+        <input type="text" name="title" required maxlength="200">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Time *</label>
+          <input type="text" name="time" required maxlength="100">
+        </div>
+        <div class="field">
+          <label>Position</label>
+          <input type="number" name="position" value="0" min="0">
+        </div>
+      </div>
+      <div class="field">
+        <label>Description *</label>
+        <textarea name="description" rows="2" required maxlength="1000"></textarea>
+      </div>
+      <div class="field">
+        <label>Features (one per line: "fas fa-icon | Label")</label>
+        <textarea name="features_raw" rows="3" placeholder="fas fa-calendar | November 22&#10;fas fa-users | Expert Instructors"></textarea>
+      </div>
+      <div class="field-row">
+        <label class="check-label"><input type="checkbox" name="is_published" checked> Published</label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-outline" data-close="workshopModal">Cancel</button>
+        <button type="submit" class="btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- User form modal -->
+<div id="userModal" class="modal" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Add Editor</h3>
+      <button class="modal-close" data-close="userModal">&times;</button>
+    </div>
+    <form id="userForm" class="modal-form">
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="field">
+        <label>Password * (min 12 chars)</label>
+        <input type="password" name="password" required minlength="12">
+      </div>
+      <div class="field">
+        <label>Role</label>
+        <select name="role">
+          <option value="editor">Editor</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-outline" data-close="userModal">Cancel</button>
+        <button type="submit" class="btn-primary">Create</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Confirm dialog -->
+<div id="confirmModal" class="modal" hidden>
+  <div class="modal-box modal-sm">
+    <div class="modal-head">
+      <h3 id="confirmTitle">Confirm</h3>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMsg"></p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" id="confirmCancel">Cancel</button>
+      <button class="btn-danger" id="confirmOk">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

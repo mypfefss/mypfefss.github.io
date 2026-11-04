@@ -1,3 +1,66 @@
+// Inject registration modal from shared HTML, then wire up events
+(async function injectModal() {
+    const basePath = window.location.pathname.includes('/pages/') ? '../' : './';
+    try {
+        const res = await fetch(basePath + 'assets/html/modal.html');
+        if (res.ok) {
+            const html = await res.text();
+            document.body.insertAdjacentHTML('beforeend', html);
+            initModalEvents();
+        }
+    } catch (e) {
+        console.warn('Could not load modal HTML', e);
+    }
+})();
+
+function initModalEvents() {
+    const modal = document.getElementById('registrationModal');
+    if (!modal) return;
+
+    document.querySelectorAll('.register-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const type = this.getAttribute('data-type');
+            const modalTitle = document.getElementById('modalTitle');
+            const academicSection = document.getElementById('academicSection');
+            const cvSection = document.getElementById('cvSection');
+            if (modalTitle) modalTitle.textContent = type === 'student' ? 'Student Registration' : 'Company Registration';
+            if (academicSection) academicSection.style.display = type === 'student' ? 'block' : 'none';
+            // CV upload only for students
+            if (cvSection) cvSection.style.display = type === 'student' ? 'block' : 'none';
+
+            // Inject/update hidden type field
+            const form = document.getElementById('registrationForm');
+            if (form) {
+                let typeInput = form.querySelector('input[name="type"]');
+                if (!typeInput) {
+                    typeInput = document.createElement('input');
+                    typeInput.type = 'hidden';
+                    typeInput.name = 'type';
+                    form.appendChild(typeInput);
+                }
+                typeInput.value = type;
+            }
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    [document.getElementById('closeModal'), document.getElementById('cancelRegistration')].forEach(btn => {
+        if (btn) btn.addEventListener('click', closeModal);
+    });
+
+    window.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+    const registrationForm = document.getElementById('registrationForm');
+    if (registrationForm) handleRegistration(registrationForm);
+
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
 // Mobile Navigation Toggle
 document.addEventListener('DOMContentLoaded', function() {
     const navToggle = document.getElementById('nav-toggle');
@@ -122,49 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('scroll', animateOnScroll);
 window.addEventListener('load', animateOnScroll);
 
-// Registration Modal Functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('registrationModal');
-    const registerBtns = document.querySelectorAll('.register-btn');
-    const closeModal = document.getElementById('closeModal');
-    const cancelBtn = document.getElementById('cancelRegistration');
-    const modalTitle = document.getElementById('modalTitle');
-    const academicSection = document.getElementById('academicSection');
-
-    if (modal && registerBtns.length > 0) {
-        registerBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const type = this.getAttribute('data-type');
-                if (type === 'student') {
-                    modalTitle.textContent = 'Student Registration';
-                    academicSection.style.display = 'block';
-                } else {
-                    modalTitle.textContent = 'Company Registration';
-                    academicSection.style.display = 'none';
-                }
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
-        [closeModal, cancelBtn].forEach(btn => {
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                });
-            }
-        });
-
-        window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        });
-    }
-});
-
 // FAQ Functionality
 document.addEventListener('DOMContentLoaded', function() {
     const faqItems = document.querySelectorAll('.faq-item');
@@ -187,77 +207,148 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// CV file input – show/hide consent checkbox and client-side validation
+function initCvInput(form) {
+    const cvInput = form.querySelector('#cv');
+    const cvError = form.querySelector('#cvError');
+    const consentGroup = form.querySelector('#cvConsentGroup');
+    if (!cvInput) return;
+
+    cvInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (cvError) cvError.style.display = 'none';
+        if (consentGroup) consentGroup.style.display = 'none';
+        if (!file) return;
+
+        // Client-side type check (friendly message before sending)
+        if (file.type && file.type !== 'application/pdf') {
+            if (cvError) { cvError.textContent = 'Only PDF files are accepted.'; cvError.style.display = 'block'; }
+            this.value = '';
+            return;
+        }
+        // Size check: 2 MB
+        if (file.size > 2 * 1024 * 1024) {
+            if (cvError) { cvError.textContent = 'File is too large. Maximum size is 2 MB.'; cvError.style.display = 'block'; }
+            this.value = '';
+            return;
+        }
+        if (consentGroup) consentGroup.style.display = 'block';
+    });
+}
+
 // Registration Form Handling
 function handleRegistration(form) {
+    initCvInput(form);
+
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        // Get the submit button
+
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.textContent;
-        
-        // Show loading state
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
         submitBtn.style.opacity = '0.7';
-        
-        try {
-            // Collect form data
-            const formData = new FormData(form);
-            const registrationData = Object.fromEntries(formData.entries());
-            
-            // Handle multiple workshop selections
-            const workshops = formData.getAll('workshops');
-            registrationData.workshops = workshops;
-            
-            console.log('Submitting Registration Data:', registrationData);
-            
-            // Get Google Script URL from config
-            const GOOGLE_SCRIPT_URL = typeof CONFIG !== 'undefined' ? CONFIG.STUDENT_SCRIPT_URL : 'YOUR_STUDENT_SCRIPT_URL_HERE';
-            
-            // Check if URL is configured
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_STUDENT_SCRIPT_URL_HERE') {
-                console.error('Student Script URL not configured! Please update assets/js/config.js');
-                throw new Error('Configuration required');
+
+        // Determine registration type
+        const typeInput = form.querySelector('input[name="type"]');
+        const regType = typeInput ? typeInput.value : 'student';
+
+        // CV validation
+        const cvInput = form.querySelector('#cv');
+        const cvError = form.querySelector('#cvError');
+        const consentCheckbox = form.querySelector('#cv_consent');
+        const cvFile = cvInput && cvInput.files[0];
+
+        if (cvFile) {
+            if (cvFile.type && cvFile.type !== 'application/pdf') {
+                if (cvError) { cvError.textContent = 'Only PDF files are accepted.'; cvError.style.display = 'block'; }
+                submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
+                return;
             }
-            
-            // Send data to Google Sheets
-            const response = await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', // Important for Google Apps Script
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(registrationData)
-            });
-            
-            // Note: With 'no-cors' mode, we can't read the response
-            // but if no error is thrown, the request was sent successfully
-            
-            console.log('Registration submitted successfully');
-            
-            // Show success message
-            showSuccessMessage('Registration submitted successfully! We will contact you soon.');
-            
-            // Close modal
-            const modal = document.getElementById('registrationModal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+            if (cvFile.size > 2 * 1024 * 1024) {
+                if (cvError) { cvError.textContent = 'File is too large. Maximum size is 2 MB.'; cvError.style.display = 'block'; }
+                submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
+                return;
             }
-            
-            // Reset form
-            form.reset();
-            
-        } catch (error) {
-            console.error('Error submitting registration:', error);
-            showErrorMessage('There was an error submitting your registration. Please try again or contact us directly.');
-        } finally {
-            // Restore button state
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
-            submitBtn.style.opacity = '1';
+            if (!consentCheckbox || !consentCheckbox.checked) {
+                if (cvError) { cvError.textContent = 'Please tick the CV consent checkbox.'; cvError.style.display = 'block'; }
+                submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
+                return;
+            }
         }
+
+        let apiSuccess = false;
+
+        // ── 1. Try the FastAPI backend ──────────────────────────────────────
+        const apiBase = typeof API_BASE !== 'undefined' ? API_BASE : '';
+        if (apiBase) {
+            try {
+                // Build FormData (do NOT set Content-Type — browser sets multipart boundary)
+                const fd = new FormData(form);
+                // Ensure workshops is a JSON-encoded list
+                const workshopValues = Array.from(form.querySelectorAll('input[name="workshops"]:checked')).map(cb => cb.value);
+                fd.delete('workshops');
+                fd.append('workshops', JSON.stringify(workshopValues));
+                // Ensure cv_consent is a proper boolean string
+                fd.set('cv_consent', consentCheckbox && consentCheckbox.checked ? 'true' : 'false');
+
+                const res = await fetch(apiBase + '/api/v1/registrations', {
+                    method: 'POST',
+                    body: fd,
+                    // No Content-Type header — let the browser handle multipart
+                });
+
+                if (res.status === 409) {
+                    const data = await res.json().catch(() => ({}));
+                    showErrorMessage(data.detail || 'You have already registered for this edition.');
+                    submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
+                    return;
+                }
+
+                if (res.ok || res.status === 201) {
+                    apiSuccess = true;
+                }
+            } catch (_) {
+                // API unreachable — fall through to Google Apps Script
+            }
+        }
+
+        // ── 2. Google Apps Script fallback (no file, always fires unless API 409'd) ──
+        const GOOGLE_SCRIPT_URL = typeof CONFIG !== 'undefined' ? CONFIG.STUDENT_SCRIPT_URL : '';
+        if (GOOGLE_SCRIPT_URL) {
+            try {
+                const formData = new FormData(form);
+                const registrationData = Object.fromEntries(formData.entries());
+                registrationData.workshops = Array.from(
+                    form.querySelectorAll('input[name="workshops"]:checked')
+                ).map(cb => cb.value);
+                // Strip the file from the Apps Script payload
+                delete registrationData.cv;
+                delete registrationData.cv_consent;
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(registrationData),
+                });
+            } catch (_) {
+                // Ignore Apps Script errors as long as API succeeded
+                if (!apiSuccess) {
+                    showErrorMessage('There was an error submitting your registration. Please try again or contact us directly.');
+                    submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
+                    return;
+                }
+            }
+        }
+
+        showSuccessMessage('Registration submitted successfully! We will contact you soon.');
+        const modal = document.getElementById('registrationModal');
+        if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
+        form.reset();
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        submitBtn.style.opacity = '1';
     });
 }
 
@@ -404,16 +495,9 @@ function showErrorMessage(message) {
     }, 5000);
 }
 
-// Initialize forms when page loads
+// Initialize partnership forms when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    const registrationForm = document.getElementById('registrationForm');
-    const partnershipForms = document.querySelectorAll('.partnership-form');
-    
-    if (registrationForm) {
-        handleRegistration(registrationForm);
-    }
-    
-    partnershipForms.forEach(handlePartnershipForm);
+    document.querySelectorAll('.partnership-form').forEach(handlePartnershipForm);
 });
 
 // REMOVED OLD COUNTER SYSTEM - using new StatsCounter class instead
@@ -803,37 +887,37 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Load workshops from JSON
+// Load workshops from JSON (tries API first, falls back to local file)
 async function loadWorkshops() {
     try {
-        console.log('Loading workshops...');
-        
-        // Try different possible paths depending on where the page is located
-        const possiblePaths = ['./data/workshops.json', '../data/workshops.json', '/data/workshops.json'];
         let data = null;
-        
-        for (const path of possiblePaths) {
+
+        // 1. Try API
+        const base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+        if (base) {
             try {
-                const response = await fetch(path);
-                if (response.ok) {
-                    data = await response.json();
-                    console.log('Workshops data loaded from:', path, data);
-                    break;
-                }
-            } catch (err) {
-                console.log('Failed to load from path:', path);
-                continue;
+                const res = await fetch(base + '/api/v1/workshops');
+                if (res.ok) data = await res.json();
+            } catch (_) {}
+        }
+
+        // 2. Fall back to local JSON
+        if (!data) {
+            const possiblePaths = ['./data/workshops.json', '../data/workshops.json', '/data/workshops.json'];
+            for (const path of possiblePaths) {
+                try {
+                    const response = await fetch(path);
+                    if (response.ok) { data = await response.json(); break; }
+                } catch (_) { continue; }
             }
         }
-        
+
         if (data && data.workshops && Array.isArray(data.workshops)) {
             displayWorkshops(data.workshops);
         } else {
-            console.warn('No workshops data found, using fallback');
             displayWorkshopsFallback();
         }
     } catch (error) {
-        console.error('Error loading workshops:', error);
         displayWorkshopsFallback();
     }
 }

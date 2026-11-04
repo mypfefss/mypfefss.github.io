@@ -66,7 +66,7 @@ function doPost(e) {
       body: 'Dear ' + data.firstName + ',\n\n' +
             'Thank you for registering for MyPFE 14.0!\n\n' +
             'Event Details:\n' +
-            'Date: November 22, 2025\n' +
+            'Date: November 21, 2026\n' +
             'Location: Faculty of Sciences of Sfax\n\n' +
             'We look forward to seeing you there!\n\n' +
             'Best regards,\n' +
