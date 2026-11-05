@@ -579,18 +579,11 @@ h4 { font-size: 1.5rem; }
     padding: 1rem;
 }
 
-.organizer img {
+.organizer-logo {
+    width: 280px;
     max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
+    height: 220px;
     object-fit: contain;
-    object-position: center;
-    transition: transform 0.3s ease;
-}
-
-.organizer:hover img {
-    transform: scale(1.05);
 }
 
 /* Make CPC logo bigger */
@@ -793,41 +786,43 @@ h4 { font-size: 1.5rem; }
 
 .overview-stats {
     display: grid;
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    margin: 0 auto;
+    max-width: 400px;
+    width: 100%;
+    padding: 0;
 }
 
 .stat-card {
-    background: var(--background-light);
-    padding: 1.5rem;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    width: 100%;
+    max-width: none;
+    min-height: 130px;
+    padding: 1.25rem;
+    text-align: left;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
-.stat-icon {
-    width: 50px;
-    height: 50px;
-    background: var(--gradient);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 1.2rem;
+.overview-stats {
+    order: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    margin: 0 auto;
+    max-width: 400px;
+    width: 100%;
+    padding: 0;
 }
 
-.stat-info .stat-number {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 0.25rem;
-}
-
-.stat-info .stat-label {
-    color: var(--text-light);
-    font-size: 0.9rem;
-    font-weight: 500;
+.stat-card {
+    width: 100%;
+    max-width: none;
+    min-height: 130px;
+    padding: 1.25rem;
+    text-align: left;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
 /* Organizers Detailed */
@@ -859,14 +854,16 @@ h4 { font-size: 1.5rem; }
 
 .organizer-info {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 280px 1fr;
     gap: 2rem;
     align-items: start;
 }
 
 .organizer-logo {
-    width: 200px;
-    height: 200px;
+    width: 280px;
+    max-width: 100%;
+    height: 220px;
+    object-fit: contain;
 }
 
 .organizer-details h3 {
@@ -1571,27 +1568,23 @@ h4 { font-size: 1.5rem; }
 
     .overview-stats {
         order: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3rem;
-        padding: 4rem 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0;
         margin: 0 auto;
         max-width: 400px;
         width: 100%;
+        padding: 0;
     }
 
     .stat-card {
         width: 100%;
-        max-width: 350px;
-        text-align: center;
-        justify-content: center;
-        padding: 2.5rem 2rem;
-        min-height: 150px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        max-width: none;
+        min-height: 130px;
+        padding: 1.25rem;
+        text-align: left;
+        align-items: flex-start;
+        justify-content: space-between;
     }
 
     .overview-text {
@@ -2956,6 +2949,8 @@ h4 { font-size: 1.5rem; }
     opacity: 1;
     transform: translateY(0);
 }
+
+
 
 .scroll-reveal-left {
     opacity: 0;
