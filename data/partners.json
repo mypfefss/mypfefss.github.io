@@ -79,6 +79,11 @@
       "id": 16,
       "name": "Technopole",
       "logo": "../assets/images/former-partners/technopole.png"
+    },
+        {
+      "id": 17,
+      "name": "Smartvisor",
+      "logo": "../assets/images/former-partners/smartvisor.png"
     }
   ]
 }

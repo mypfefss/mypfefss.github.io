@@ -67,15 +67,24 @@
         </div>
     </section>
 
-    <!-- Workshops (rendered by main.js into .workshops-grid) -->
-    <section class="workshop-details">
-        <div class="container">
-            <div class="section-header">
-                <h2>Workshops</h2>
-            </div>
-            <div class="workshops-grid"></div>
+<!-- Workshops -->
+<section class="workshop-details">
+    <div class="container">
+        <div class="section-header">
+            <h2>Workshops</h2>
         </div>
-    </section>
+
+        <!-- Shown while workshops are not announced -->
+        <div class="soon-box">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <h4>Coming soon</h4>
+            <p>Workshops will be announced shortly.</p>
+        </div>
+
+        <!-- Kept for later: remove the "hidden" attribute and delete the soon-box above -->
+        <div class="workshops-grid" hidden></div>
+    </div>
+</section>
 
     <!-- CTA -->
     <section class="cta">
@@ -84,7 +93,7 @@
                 <h2>Join MyPFE 15.0</h2>
                 <p>November 21, 2026 · Faculty of Sciences of Sfax</p>
                 <div class="cta-buttons">
-                    <button class="btn btn-primary register-btn" data-type="student">Register Now</button>
+                    <button class="btn register-btn" data-type="student">Register Now</button>
                     <a href="sponsors.html" class="btn btn-outline">Become a Partner</a>
                 </div>
             </div>
