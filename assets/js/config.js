@@ -1,7 +1,10 @@
 // ── API base URL ───────────────────────────────────────────────────────────────
-// Change this to your deployed FastAPI Cloud URL once deployed.
-// Leave empty string to skip the API and use Google Apps Script only.
-const API_BASE = '';
+// Use the local backend on localhost, and FastAPI Cloud in production.
+const API_BASE = ['127.0.0.1', 'localhost'].includes(
+    typeof window !== 'undefined' ? window.location.hostname : ''
+)
+    ? 'http://127.0.0.1:8000'
+    : 'https://mypfe.fastapicloud.dev';
 
 // ── Google Apps Script Configuration ──────────────────────────────────────────
 const CONFIG = {

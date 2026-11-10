@@ -802,7 +802,8 @@ function renderBarChart(perDay) {
     rect.setAttribute('y', y);
     rect.setAttribute('width', barW);
     rect.setAttribute('height', barH);
-    rect.setAttribute('fill', '#6E02BB');
+    rect.setAttribute('fill', '#168B7A');
+    // Logo green
     rect.setAttribute('rx', '2');
     svg.appendChild(rect);
 
@@ -919,7 +920,7 @@ function renderRegTable(items) {
     // Expandable detail row
     const detailTr = document.createElement('tr');
     detailTr.hidden = true;
-    detailTr.style.cssText = 'background:#fdf9fd;';
+    detailTr.style.cssText = 'background:#f7fbfa;';
     const detailTd = document.createElement('td');
     detailTd.colSpan = 8;
     detailTd.style.cssText = 'padding:.75rem 1rem 1rem;font-size:.8rem;border-top:none;';
@@ -958,9 +959,15 @@ function renderRegTable(items) {
 
 async function downloadCv(regId) {
   const res = await api('/api/v1/admin/registrations/' + regId + '/cv');
-  if (!res || !res.ok) { toast('Could not get download link', 'error'); return; }
-  const data = await res.json();
-  window.open(data.url, '_blank');
+  if (!res || !res.ok) { toast('Could not download CV', 'error'); return; }
+  const blobUrl = URL.createObjectURL(await res.blob());
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.download = 'cv-' + regId + '.pdf';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
 }
 
 async function deleteCv(regId) {

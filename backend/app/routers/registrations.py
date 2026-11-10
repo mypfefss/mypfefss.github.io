@@ -2,6 +2,7 @@ import csv
 import io
 from datetime import datetime, timezone
 from typing import List, Optional
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
@@ -13,7 +14,7 @@ from app.auth import require_admin, require_any_admin
 from app.db import get_session
 from app.models import CvAccessLog, Registration
 from app.schemas import RegistrationOut, StatsOut
-from app.storage import StorageError, delete_cv, presign_cv
+from app.storage import StorageError, delete_cv, download_cv
 
 router = APIRouter(prefix="/admin/registrations")
 
@@ -94,10 +95,10 @@ def _reg_out(r: Registration) -> dict:
     }
 
 
-# ── CV presigned URL ───────────────────────────────────────────────────────────
+# ── CV download ────────────────────────────────────────────────────────────────
 
 @router.get("/{reg_id}/cv", dependencies=[Depends(require_any_admin)])
-async def get_cv_url(
+async def get_cv_file(
     reg_id: str,
     payload: dict = Depends(require_any_admin),
     session: AsyncSession = Depends(get_session),
@@ -116,11 +117,16 @@ async def get_cv_url(
     await session.commit()
 
     try:
-        url = await presign_cv(reg.cv_key, reg.cv_original_name or "cv.pdf")
+        data = await download_cv(reg.cv_key)
     except StorageError as exc:
-        raise HTTPException(503, "Could not generate download link. Try again later.")
+        raise HTTPException(503, "Could not download the CV. Try again later.") from exc
 
-    return {"url": url, "expires_in": 300}
+    filename = quote(reg.cv_original_name or "cv.pdf", safe="")
+    return StreamingResponse(
+        iter([data]),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename*=UTF-8''{filename}"},
+    )
 
 
 # ── Delete CV only ─────────────────────────────────────────────────────────────

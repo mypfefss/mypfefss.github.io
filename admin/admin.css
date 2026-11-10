@@ -1,19 +1,22 @@
+/* ── Hidden state and cool mint theme ────────────────────────────────────── */
+[hidden] { display: none !important; }
+
 /* ── Variables ─────────────────────────────────────────────────────────────── */
 :root {
-  --primary: #6E02BB;
-  --primary-dark: #5500a0;
-  --secondary: #99016C;
-  --accent: #E01EA8;
-  --bg: #fdf9fd;
+  --primary: #168B7A;
+  --primary-dark: #0F6659;
+  --secondary: #087F5B;
+  --accent: #9EEDE1;
+  --bg: #f2f8f7;
   --surface: #ffffff;
-  --border: #e8e0f0;
+  --border: #d6e7e4;
   --text: #1f2937;
   --text-muted: #6b7280;
   --danger: #dc2626;
   --success: #16a34a;
   --sidebar-w: 220px;
   --radius: 8px;
-  --shadow: 0 1px 4px rgba(110,2,187,.08);
+  --shadow: 0 1px 5px rgba(15,102,89,.09);
 }
 
 /* ── Reset ─────────────────────────────────────────────────────────────────── */
@@ -29,7 +32,7 @@ button { cursor: pointer; font-family: inherit; }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%);
+  background: linear-gradient(135deg, #edf8f6 0%, #d9f2ed 100%);
 }
 .login-card {
   background: var(--surface);
@@ -37,7 +40,7 @@ button { cursor: pointer; font-family: inherit; }
   padding: 2.5rem 2rem;
   width: 100%;
   max-width: 380px;
-  box-shadow: 0 8px 32px rgba(110,2,187,.12);
+  box-shadow: 0 8px 32px rgba(15,102,89,.14);
 }
 .login-logo { text-align: center; margin-bottom: 1.5rem; }
 .login-logo img { height: 48px; }
@@ -100,7 +103,9 @@ button { cursor: pointer; font-family: inherit; }
   border-radius: var(--radius); font-size: .875rem; font-weight: 500;
   transition: background .15s;
 }
-.btn-outline:hover { background: #f3e8ff; }
+.btn-outline:hover {
+  background: #e1f4ef;
+}
 .btn-ghost {
   background: transparent; color: rgba(255,255,255,.8);
   border: none; padding: .4rem .75rem;
@@ -121,7 +126,10 @@ button { cursor: pointer; font-family: inherit; }
   border-radius: 4px; font-size: .9rem;
   transition: color .15s, background .15s;
 }
-.btn-icon:hover { color: var(--primary); background: #f3e8ff; }
+.btn-icon:hover {
+  color: var(--primary);
+  background: #e1f4ef;
+}
 .btn-icon.danger:hover { color: var(--danger); background: #fee2e2; }
 
 /* ── Forms ─────────────────────────────────────────────────────────────────── */
@@ -221,9 +229,13 @@ button { cursor: pointer; font-family: inherit; }
   padding: .65rem .9rem; text-align: left;
   border-bottom: 1px solid var(--border); font-size: .85rem;
 }
-.data-table th { font-weight: 600; background: #f9f5ff; color: var(--primary); }
+.data-table th {
+  font-weight: 600;
+  background: #edf7f5;
+  color: var(--primary);
+}
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tbody tr:hover { background: #fdf4ff; }
+.data-table tbody tr:hover { background: #f4fbf9; }
 
 /* ── Pagination ────────────────────────────────────────────────────────────── */
 .pagination {
@@ -236,7 +248,7 @@ button { cursor: pointer; font-family: inherit; }
   font-size: .8rem; cursor: pointer; transition: background .15s;
 }
 .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-.page-btn:hover:not(.active) { background: #f3e8ff; }
+.page-btn:hover:not(.active) { background: #e1f4ef; }
 
 /* ── Modals ────────────────────────────────────────────────────────────────── */
 .modal {
@@ -278,7 +290,7 @@ button { cursor: pointer; font-family: inherit; }
 /* ── Live preview ──────────────────────────────────────────────────────────── */
 .preview-col {
   border-left: 1px solid var(--border);
-  padding: 1.25rem; background: #fdf9fd;
+  padding: 1.25rem; background: #f7fbfa;
   overflow-y: auto;
 }
 .preview-label { font-size: .75rem; font-weight: 600; color: var(--text-muted); margin-bottom: .75rem; text-transform: uppercase; letter-spacing: .05em; }
@@ -294,14 +306,14 @@ button { cursor: pointer; font-family: inherit; }
 .tl-preview .tl-item p { font-size: .8rem; color: var(--text-muted); margin-top: .2rem; }
 .tl-preview .tl-chips { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .35rem; }
 .tl-preview .tl-chips span {
-  font-size: .7rem; background: #f3e8ff; color: var(--primary);
+  font-size: .7rem; background: #e1f4ef; color: var(--primary);
   padding: .1rem .45rem; border-radius: 20px;
 }
 
 /* ── Sections repeater ─────────────────────────────────────────────────────── */
 .section-block {
   border: 1px solid var(--border); border-radius: var(--radius);
-  padding: .75rem; margin-top: .5rem; background: #fdf9fd;
+  padding: .75rem; margin-top: .5rem; background: #f7fbfa;
   display: flex; flex-direction: column; gap: .5rem;
 }
 .section-block-head {

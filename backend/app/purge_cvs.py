@@ -1,5 +1,5 @@
 """
-Purge CVs older than N days from both R2 storage and the database.
+Purge CVs older than N days from Drive/legacy R2 storage and the database.
 
 Usage:
     python -m app.purge_cvs --older-than-days 90
@@ -57,7 +57,7 @@ async def purge(days: int, dry_run: bool) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Purge old CVs from R2 and DB")
+    parser = argparse.ArgumentParser(description="Purge old CVs from Drive/R2 and DB")
     parser.add_argument("--older-than-days", type=int, required=True)
     parser.add_argument("--dry-run", action="store_true", default=False)
     args = parser.parse_args()

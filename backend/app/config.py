@@ -25,7 +25,13 @@ class Settings(BaseSettings):
     admin_email: str = ""
     admin_password: str = ""
 
-    # Cloudflare R2 / S3-compatible storage
+    # Google Drive storage for new CV uploads (OAuth, uploads as the MyPFE account)
+    google_client_id: str = ""
+    google_client_secret: str = ""
+    google_refresh_token: str = ""
+    google_drive_folder_id: str = ""
+
+    # Legacy Cloudflare R2 settings (used only for CVs uploaded before migration)
     r2_endpoint_url: str = ""
     r2_access_key_id: str = ""
     r2_secret_access_key: str = ""
@@ -45,10 +51,10 @@ class Settings(BaseSettings):
     @property
     def storage_configured(self) -> bool:
         return bool(
-            self.r2_endpoint_url
-            and self.r2_access_key_id
-            and self.r2_secret_access_key
-            and self.r2_bucket_name
+            self.google_client_id
+            and self.google_client_secret
+            and self.google_refresh_token
+            and self.google_drive_folder_id
         )
 
 

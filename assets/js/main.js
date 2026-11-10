@@ -1,5 +1,10 @@
 // Inject registration modal from shared HTML, then wire up events
 (async function injectModal() {
+    if (document.getElementById('registrationModal')) {
+        initModalEvents();
+        return;
+    }
+
     const basePath = window.location.pathname.includes('/pages/') ? '../' : './';
     try {
         const res = await fetch(basePath + 'assets/html/modal.html');
@@ -285,6 +290,19 @@ function handleRegistration(form) {
             try {
                 // Build FormData (do NOT set Content-Type — browser sets multipart boundary)
                 const fd = new FormData(form);
+                // Map frontend field names to the FastAPI schema.
+                if (fd.has('firstName')) {
+                    fd.set('first_name', fd.get('firstName'));
+                    fd.delete('firstName');
+                }
+                if (fd.has('lastName')) {
+                    fd.set('last_name', fd.get('lastName'));
+                    fd.delete('lastName');
+                }
+                fd.delete('companyName');
+                if (form.elements.company_name) {
+                    fd.set('company_name', form.elements.company_name.value);
+                }
                 // Ensure workshops is a JSON-encoded list
                 const workshopValues = Array.from(form.querySelectorAll('input[name="workshops"]:checked')).map(cb => cb.value);
                 fd.delete('workshops');
@@ -298,16 +316,19 @@ function handleRegistration(form) {
                     // No Content-Type header — let the browser handle multipart
                 });
 
-                if (res.status === 409) {
+                if (!res.ok) {
                     const data = await res.json().catch(() => ({}));
-                    showErrorMessage(data.detail || 'You have already registered for this edition.');
-                    submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
+                    const detail = Array.isArray(data.detail)
+                        ? data.detail.map(item => item.msg).join(', ')
+                        : (data.detail || 'Your registration could not be submitted.');
+                    showErrorMessage(detail);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.style.opacity = '1';
                     return;
                 }
 
-                if (res.ok || res.status === 201) {
-                    apiSuccess = true;
-                }
+                apiSuccess = true;
             } catch (_) {
                 // API unreachable — fall through to Google Apps Script
             }
