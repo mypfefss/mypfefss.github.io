@@ -54,7 +54,6 @@ class Settings(BaseSettings):
             self.google_client_id
             and self.google_client_secret
             and self.google_refresh_token
-            and self.google_drive_folder_id
         )
 
 
