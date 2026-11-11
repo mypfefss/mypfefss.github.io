@@ -254,10 +254,6 @@ function handleRegistration(form) {
         submitBtn.textContent = 'Submitting...';
         submitBtn.style.opacity = '0.7';
 
-        // Determine registration type
-        const typeInput = form.querySelector('input[name="type"]');
-        const regType = typeInput ? typeInput.value : 'student';
-
         // CV validation
         const cvInput = form.querySelector('#cv');
         const cvError = form.querySelector('#cvError');
@@ -282,87 +278,65 @@ function handleRegistration(form) {
             }
         }
 
-        let apiSuccess = false;
-
-        // ── 1. Try the FastAPI backend ──────────────────────────────────────
+        // Submit registrations only to the backend used by the admin dashboard.
         const apiBase = typeof API_BASE !== 'undefined' ? API_BASE : '';
-        if (apiBase) {
-            try {
-                // Build FormData (do NOT set Content-Type — browser sets multipart boundary)
-                const fd = new FormData(form);
-                // Map frontend field names to the FastAPI schema.
-                if (fd.has('firstName')) {
-                    fd.set('first_name', fd.get('firstName'));
-                    fd.delete('firstName');
-                }
-                if (fd.has('lastName')) {
-                    fd.set('last_name', fd.get('lastName'));
-                    fd.delete('lastName');
-                }
-                fd.delete('companyName');
-                if (form.elements.company_name) {
-                    fd.set('company_name', form.elements.company_name.value);
-                }
-                // Ensure workshops is a JSON-encoded list
-                const workshopValues = Array.from(form.querySelectorAll('input[name="workshops"]:checked')).map(cb => cb.value);
-                fd.delete('workshops');
-                fd.append('workshops', JSON.stringify(workshopValues));
-                // Ensure cv_consent is a proper boolean string
-                fd.set('cv_consent', consentCheckbox && consentCheckbox.checked ? 'true' : 'false');
-
-                const res = await fetch(apiBase + '/api/v1/registrations', {
-                    method: 'POST',
-                    body: fd,
-                    // No Content-Type header — let the browser handle multipart
-                });
-
-                if (!res.ok) {
-                    const data = await res.json().catch(() => ({}));
-                    const detail = Array.isArray(data.detail)
-                        ? data.detail.map(item => item.msg).join(', ')
-                        : (data.detail || 'Your registration could not be submitted.');
-                    showErrorMessage(detail);
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalBtnText;
-                    submitBtn.style.opacity = '1';
-                    return;
-                }
-
-                apiSuccess = true;
-            } catch (_) {
-                // API unreachable — fall through to Google Apps Script
-            }
+        if (!apiBase) {
+            showErrorMessage('Registration service is not configured. Please try again later.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            submitBtn.style.opacity = '1';
+            return;
         }
 
-        // ── 2. Google Apps Script fallback (no file, always fires unless API 409'd) ──
-        const GOOGLE_SCRIPT_URL = typeof CONFIG !== 'undefined' ? CONFIG.STUDENT_SCRIPT_URL : '';
-        if (GOOGLE_SCRIPT_URL) {
-            try {
-                const formData = new FormData(form);
-                const registrationData = Object.fromEntries(formData.entries());
-                registrationData.workshops = Array.from(
-                    form.querySelectorAll('input[name="workshops"]:checked')
-                ).map(cb => cb.value);
-                // Strip the file from the Apps Script payload
-                delete registrationData.cv;
-                delete registrationData.cv_consent;
-
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(registrationData),
-                });
-            } catch (_) {
-                // Ignore Apps Script errors as long as API succeeded
-                if (!apiSuccess) {
-                    showErrorMessage('There was an error submitting your registration. Please try again or contact us directly.');
-                    submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
-                    return;
-                }
-            }
+        // Build FormData (do NOT set Content-Type — browser sets multipart boundary).
+        const fd = new FormData(form);
+        if (fd.has('firstName')) {
+            fd.set('first_name', fd.get('firstName'));
+            fd.delete('firstName');
         }
+        if (fd.has('lastName')) {
+            fd.set('last_name', fd.get('lastName'));
+            fd.delete('lastName');
+        }
+        fd.delete('companyName');
+        if (form.elements.company_name) {
+            fd.set('company_name', form.elements.company_name.value);
+        }
+        const workshopValues = Array.from(form.querySelectorAll('input[name="workshops"]:checked')).map(cb => cb.value);
+        fd.delete('workshops');
+        fd.append('workshops', JSON.stringify(workshopValues));
+        fd.set('cv_consent', consentCheckbox && consentCheckbox.checked ? 'true' : 'false');
 
+        try {
+            const res = await fetch(apiBase + '/api/v1/registrations', {
+                method: 'POST',
+                body: fd,
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                const detail = Array.isArray(data.detail)
+                    ? data.detail.map(item => item.msg).join(', ')
+                    : (data.detail || 'Your registration could not be submitted.');
+                showErrorMessage(detail);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                submitBtn.style.opacity = '1';
+                return;
+            }
+            if (cvFile && !data.cv_saved) {
+                showErrorMessage('Your registration was received, but the CV was not saved. Please contact the organizers before submitting again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                submitBtn.style.opacity = '1';
+                return;
+            }
+        } catch (_) {
+            showErrorMessage('Could not reach the registration service. Your registration was not submitted; please try again later.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            submitBtn.style.opacity = '1';
+            return;
+        }
         showSuccessMessage('Registration submitted successfully! We will contact you soon.');
         const modal = document.getElementById('registrationModal');
         if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }

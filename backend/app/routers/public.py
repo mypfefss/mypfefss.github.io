@@ -158,8 +158,11 @@ async def create_registration(
             cv_original_name = cv.filename[:255]
             cv_size = len(data)
             cv_saved = True
-        except StorageError:
-            cv_saved = False
+        except StorageError as exc:
+            raise HTTPException(
+                status_code=503,
+                detail="CV upload failed; your registration was not saved. Please try again later.",
+            ) from exc
 
     # Persist
     reg = Registration(
