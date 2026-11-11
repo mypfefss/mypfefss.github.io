@@ -167,7 +167,8 @@ async def upload_cv(data: bytes, edition: int, original_name: str) -> str:
 
     try:
         return await asyncio.to_thread(_put)
-    except StorageError:
+    except StorageError as exc:
+        logger.error("CV upload to Google Drive failed: %s", exc)
         raise
     except Exception as exc:
         detail = _describe(exc)
