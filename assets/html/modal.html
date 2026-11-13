@@ -67,15 +67,15 @@
                         </div>
                     </div>
 
-                    <!-- CV upload – students only -->
+                    <!-- CV link – students only -->
                     <div class="form-group" id="cvSection">
-                        <label for="cv">CV (PDF, max 3 MB)</label>
-                        <input type="file" id="cv" name="cv" accept=".pdf,application/pdf">
+                        <label for="cv_url">Upload your CV in Google Drive and paste the shareable link here *</label>
+                        <input type="url" id="cv_url" name="cv_url" placeholder="https://drive.google.com/..." required>
                         <small id="cvError" style="color:#ef4444;display:none;"></small>
                         <div class="form-group cv-consent-group" id="cvConsentGroup">
                             <label class="cv-consent-label" for="cv_consent">
                                 <input class="cv-consent-checkbox" type="checkbox" id="cv_consent" name="cv_consent" value="true">
-                                <span>I consent to MyPFE storing my CV to share with partner companies for recruitment purposes.</span>
+                                <span>I consent to MyPFE storing my CV link to share with partner companies for recruitment purposes.</span>
                             </label>
                         </div>
                     </div>

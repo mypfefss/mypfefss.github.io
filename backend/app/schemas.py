@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -141,7 +142,7 @@ VALID_EXPERIENCE = {"none", "internship", "part-time", "full-time"}
 class RegistrationIn(BaseModel):
     """
     Parsed from multipart form fields (all strings from Form()).
-    CV file handled separately in the router.
+    Students submit a shareable CV URL instead of uploading a PDF file.
     """
     type: str
     first_name: str = Field(max_length=100)
@@ -157,6 +158,7 @@ class RegistrationIn(BaseModel):
     experience: Optional[str] = Field(default=None, max_length=50)
     company_name: Optional[str] = Field(default=None, max_length=200)
     edition: int = 15
+    cv_url: Optional[str] = Field(default=None, max_length=2048)
     cv_consent: bool = False
     # Honeypot – must be empty
     website: Optional[str] = Field(default=None, max_length=200)
@@ -189,6 +191,18 @@ class RegistrationIn(BaseModel):
             raise ValueError(f"experience must be one of {VALID_EXPERIENCE}")
         return v
 
+    @field_validator("cv_url")
+    @classmethod
+    def validate_cv_url(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return None
+        value = v.strip()
+        if not value:
+            return None
+        if not re.match(r"^https?://", value, flags=re.IGNORECASE):
+            raise ValueError("cv_url must be a valid http or https URL")
+        return value
+
 
 class RegistrationOut(BaseModel):
     id: str
@@ -206,6 +220,7 @@ class RegistrationOut(BaseModel):
     experience: Optional[str]
     company_name: Optional[str]
     edition: int
+    cv_url: Optional[str]
     has_cv: bool
     cv_consent: bool
     created_at: datetime

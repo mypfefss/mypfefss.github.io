@@ -89,7 +89,8 @@ def _reg_out(r: Registration) -> dict:
         "experience": r.experience,
         "company_name": r.company_name,
         "edition": r.edition,
-        "has_cv": bool(r.cv_key),
+        "cv_url": r.cv_url,
+        "has_cv": bool(r.cv_url or r.cv_key),
         "cv_consent": r.cv_consent,
         "created_at": r.created_at.isoformat(),
     }
@@ -198,7 +199,7 @@ async def export_csv(session: AsyncSession = Depends(get_session)):
             _csv_safe(r.experience or ""),
             _csv_safe(r.company_name or ""),
             _csv_safe(str(r.edition)),
-            _csv_safe("yes" if r.cv_key else "no"),   # presence only, never the key
+            _csv_safe("yes" if (r.cv_url or r.cv_key) else "no"),
             _csv_safe("yes" if r.cv_consent else "no"),
             _csv_safe(r.created_at.isoformat()),
         ])
@@ -233,7 +234,7 @@ async def get_stats(session: AsyncSession = Depends(get_session)):
 
     top_unis = sorted(uni_counts.items(), key=lambda x: x[1], reverse=True)[:10]
 
-    cv_count = sum(1 for r in all_regs if r.cv_key)
+    cv_count = sum(1 for r in all_regs if (r.cv_url or r.cv_key))
 
     return {
         "total": total,

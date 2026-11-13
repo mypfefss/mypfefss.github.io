@@ -90,7 +90,8 @@ class Registration(SQLModel, table=True):
     experience: Optional[str] = Field(default=None, max_length=50)
     company_name: Optional[str] = Field(default=None, max_length=200)
     edition: int = Field(default=15)
-    # CV upload metadata
+    # CV metadata: prefer a shareable public link; legacy file-based fields remain for compatibility.
+    cv_url: Optional[str] = Field(default=None, max_length=2048)
     cv_key: Optional[str] = Field(default=None, max_length=300)
     cv_original_name: Optional[str] = Field(default=None, max_length=255)
     cv_size: Optional[int] = Field(default=None)

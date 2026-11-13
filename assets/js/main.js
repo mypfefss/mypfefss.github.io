@@ -212,41 +212,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-const MAX_CV_SIZE_BYTES = 3 * 1024 * 1024;
-
-// CV file input – show/hide consent checkbox and client-side validation
+// CV link input – show/hide consent checkbox and validate the public URL
 function initCvInput(form) {
-    const cvInput = form.querySelector('#cv');
+    const cvInput = form.querySelector('#cv_url');
     const cvError = form.querySelector('#cvError');
     const consentGroup = form.querySelector('#cvConsentGroup');
     const consentCheckbox = form.querySelector('#cv_consent');
     if (!cvInput) return;
 
-    cvInput.addEventListener('change', function() {
-        const file = this.files[0];
+    const validateCvUrl = () => {
+        const value = cvInput.value.trim();
         if (cvError) cvError.style.display = 'none';
-        if (consentGroup) consentGroup.style.display = 'none';
-        if (consentCheckbox) {
-            consentCheckbox.required = false;
-            consentCheckbox.checked = false;
-        }
-        if (!file) return;
-
-        // Client-side type check (friendly message before sending)
-        if (file.type && file.type !== 'application/pdf') {
-            if (cvError) { cvError.textContent = 'Only PDF files are accepted.'; cvError.style.display = 'block'; }
-            this.value = '';
+        if (!value) {
+            if (consentGroup) consentGroup.style.display = 'none';
+            if (consentCheckbox) {
+                consentCheckbox.required = false;
+                consentCheckbox.checked = false;
+            }
             return;
         }
-        // Size check: 3 MB
-        if (file.size > MAX_CV_SIZE_BYTES) {
-            if (cvError) { cvError.textContent = 'File is too large. Maximum size is 3 MB.'; cvError.style.display = 'block'; }
-            this.value = '';
+        if (!/^https?:\/\//i.test(value)) {
+            if (cvError) { cvError.textContent = 'Please enter a valid shareable CV link starting with http:// or https://'; cvError.style.display = 'block'; }
             return;
         }
         if (consentGroup) consentGroup.style.display = 'block';
         if (consentCheckbox) consentCheckbox.required = true;
-    });
+    };
+
+    cvInput.addEventListener('input', validateCvUrl);
+    validateCvUrl();
 }
 
 // Registration Form Handling
@@ -262,20 +256,15 @@ function handleRegistration(form) {
         submitBtn.textContent = 'Submitting...';
         submitBtn.style.opacity = '0.7';
 
-        // CV validation
-        const cvInput = form.querySelector('#cv');
+        // CV link validation
+        const cvInput = form.querySelector('#cv_url');
         const cvError = form.querySelector('#cvError');
         const consentCheckbox = form.querySelector('#cv_consent');
-        const cvFile = cvInput && cvInput.files[0];
+        const cvUrl = cvInput ? cvInput.value.trim() : '';
 
-        if (cvFile) {
-            if (cvFile.type && cvFile.type !== 'application/pdf') {
-                if (cvError) { cvError.textContent = 'Only PDF files are accepted.'; cvError.style.display = 'block'; }
-                submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
-                return;
-            }
-            if (cvFile.size > MAX_CV_SIZE_BYTES) {
-                if (cvError) { cvError.textContent = 'File is too large. Maximum size is 3 MB.'; cvError.style.display = 'block'; }
+        if (form.querySelector('#academicSection') && form.querySelector('#academicSection').style.display !== 'none') {
+            if (!cvUrl || !/^https?:\/\//i.test(cvUrl)) {
+                if (cvError) { cvError.textContent = 'Please enter a valid shareable CV link.'; cvError.style.display = 'block'; }
                 submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
                 return;
             }
@@ -331,8 +320,8 @@ function handleRegistration(form) {
                 submitBtn.style.opacity = '1';
                 return;
             }
-            if (cvFile && !data.cv_saved) {
-                showErrorMessage('Your registration was received, but the CV was not saved. Please contact the organizers before submitting again.');
+            if (form.querySelector('#academicSection') && form.querySelector('#academicSection').style.display !== 'none' && !data.cv_saved) {
+                showErrorMessage('Your registration was received, but the CV link was not saved. Please contact the organizers before submitting again.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalBtnText;
                 submitBtn.style.opacity = '1';
