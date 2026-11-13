@@ -21,3 +21,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+.env
+.env.*
+backend/.env
+backend/.env.*
+backend/uploads/
+uploads/

@@ -38,7 +38,8 @@ class Settings(BaseSettings):
     r2_bucket_name: str = "mypfe-cvs"
 
     # CV constraints
-    cv_max_bytes: int = 2 * 1024 * 1024  # 2 MB
+    cv_max_bytes: int = 3 * 1024 * 1024  # 3 MB
+    cv_storage_dir: str = ""
 
     # Request body cap
     max_request_body_bytes: int = 5 * 1024 * 1024  # 5 MB

@@ -1,10 +1,11 @@
-"""Private Google Drive storage for CVs (OAuth), with legacy R2 read/delete support."""
+"""Private Google Drive storage for CVs (OAuth), with local fallback and legacy R2 support."""
 from __future__ import annotations
 
 import asyncio
 import io
 import logging
 import uuid
+from pathlib import Path
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 # Magic bytes that identify a valid PDF file
 _PDF_MAGIC = b"%PDF-"
 _DRIVE_KEY_PREFIX = "gdrive:"
+_LOCAL_KEY_PREFIX = "local:"
 # drive.file: the app can only see files/folders created by this same OAuth client
 _DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file"
 _TOKEN_URI = "https://oauth2.googleapis.com/token"
@@ -28,6 +30,25 @@ _FOLDER_MIME = "application/vnd.google-apps.folder"
 
 # Resolved folder id, cached for the life of the process
 _folder_cache: str | None = None
+
+
+def _local_storage_dir() -> Path:
+    """Return the writable CV storage directory, falling back to a repo-local uploads folder."""
+    settings = get_settings()
+    configured_dir = getattr(settings, "cv_storage_dir", "")
+    base_dir = Path(configured_dir) if configured_dir else Path(__file__).resolve().parent.parent / "uploads" / "cvs"
+    base_dir.mkdir(parents=True, exist_ok=True)
+    return base_dir
+
+
+def _local_cv_path(key: str) -> Path:
+    filename = key.removeprefix(_LOCAL_KEY_PREFIX)
+    if not filename or "/" in filename or "\\" in filename:
+        raise StorageError("Invalid local CV reference.")
+    path = _local_storage_dir() / filename
+    if not path.is_file():
+        raise StorageError("Local CV file not found.")
+    return path
 
 
 # ── Custom exception ───────────────────────────────────────────────────────────
@@ -150,12 +171,12 @@ def validate_pdf_bytes(data: bytes, max_bytes: int) -> None:
 async def upload_cv(data: bytes, edition: int, original_name: str) -> str:
     """
     Upload *data* to the private Google Drive folder and return its key.
-    Raises StorageError on failure.
+    Falls back to a local disk copy when Drive is unavailable or its OAuth token is expired.
     """
     safe_name = original_name.replace("\x00", "").split("/")[-1].split("\\")[-1][:255]
     drive_name = f"{edition}-{uuid.uuid4()}-{safe_name or 'cv.pdf'}"
 
-    def _put() -> str:
+    def _put_drive() -> str:
         service = _make_drive_service()
         folder_id = _resolve_folder_id(service)
         result = service.files().create(
@@ -165,21 +186,45 @@ async def upload_cv(data: bytes, edition: int, original_name: str) -> str:
         ).execute()
         return f"{_DRIVE_KEY_PREFIX}{result['id']}"
 
+    def _put_local() -> str:
+        filename = f"{edition}-{uuid.uuid4()}-{safe_name or 'cv.pdf'}"
+        path = _local_storage_dir() / filename
+        path.write_bytes(data)
+        return f"{_LOCAL_KEY_PREFIX}{filename}"
+
+    settings = get_settings()
     try:
-        return await asyncio.to_thread(_put)
+        if not settings.storage_configured:
+            logger.warning("Google Drive storage is not configured; storing CV locally instead.")
+            return await asyncio.to_thread(_put_local)
+        return await asyncio.to_thread(_put_drive)
     except StorageError as exc:
-        logger.error("CV upload to Google Drive failed: %s", exc)
-        raise
+        logger.warning("CV upload to Google Drive failed: %s. Falling back to local storage.", exc)
+        try:
+            return await asyncio.to_thread(_put_local)
+        except Exception as local_exc:
+            raise StorageError(f"Drive upload failed: {exc}; local fallback failed: {local_exc}") from local_exc
     except Exception as exc:
         detail = _describe(exc)
-        logger.error("CV upload to Google Drive failed: %s", detail)
-        raise StorageError(detail) from exc
+        logger.warning("CV upload to Google Drive failed: %s. Falling back to local storage.", detail)
+        try:
+            return await asyncio.to_thread(_put_local)
+        except Exception as local_exc:
+            raise StorageError(f"Drive upload failed: {detail}; local fallback failed: {local_exc}") from local_exc
 
 
 # ── Download ───────────────────────────────────────────────────────────────────
 
 async def download_cv(key: str) -> bytes:
-    """Download a CV from Drive or legacy R2 storage."""
+    """Download a CV from Drive, local fallback storage, or legacy R2 storage."""
+    if key.startswith(_LOCAL_KEY_PREFIX):
+        try:
+            return _local_cv_path(key).read_bytes()
+        except StorageError:
+            raise
+        except Exception as exc:
+            raise StorageError(f"Local CV retrieval failed: {exc}") from exc
+
     if key.startswith(_DRIVE_KEY_PREFIX):
         file_id = key.removeprefix(_DRIVE_KEY_PREFIX)
 
@@ -211,7 +256,16 @@ async def download_cv(key: str) -> bytes:
 # ── Delete ─────────────────────────────────────────────────────────────────────
 
 async def delete_cv(key: str) -> None:
-    """Delete a Drive CV or legacy R2 object."""
+    """Delete a Drive CV, local fallback CV, or legacy R2 object."""
+    if key.startswith(_LOCAL_KEY_PREFIX):
+        try:
+            _local_cv_path(key).unlink(missing_ok=True)
+        except StorageError:
+            raise
+        except Exception as exc:
+            raise StorageError(f"Local CV deletion failed: {exc}") from exc
+        return
+
     if key.startswith(_DRIVE_KEY_PREFIX):
         file_id = key.removeprefix(_DRIVE_KEY_PREFIX)
 
