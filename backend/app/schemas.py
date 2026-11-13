@@ -136,6 +136,29 @@ class WorkshopPublicOut(BaseModel):
 VALID_TYPES = {"student", "company"}
 VALID_FIELDS = {"pre-engineering", "engineering", "licence", "master"}
 VALID_LEVELS = {"1", "2", "3"}
+LEVEL_ALIASES = {
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "1st": "1",
+    "2nd": "2",
+    "3rd": "3",
+    "first": "1",
+    "second": "2",
+    "third": "3",
+    "l1": "1",
+    "l2": "2",
+    "l3": "3",
+    "year1": "1",
+    "year-1": "1",
+    "year 1": "1",
+    "year2": "2",
+    "year-2": "2",
+    "year 2": "2",
+    "year3": "3",
+    "year-3": "3",
+    "year 3": "3",
+}
 VALID_EXPERIENCE = {"none", "internship", "part-time", "full-time"}
 
 
@@ -173,9 +196,14 @@ class RegistrationIn(BaseModel):
     @field_validator("level")
     @classmethod
     def validate_level(cls, v: str) -> str:
-        if v not in VALID_LEVELS:
-            raise ValueError(f"level must be one of {VALID_LEVELS}")
-        return v
+        value = (v or "").strip().lower().replace("_", " ").replace("-", " ")
+        normalized = " ".join(value.split())
+        canonical = LEVEL_ALIASES.get(normalized)
+        if canonical is None and normalized in VALID_LEVELS:
+            canonical = normalized
+        if canonical is None:
+            raise ValueError(f"level must be one of {sorted(VALID_LEVELS)} or common aliases like 1st/2nd/3rd")
+        return canonical
 
     @field_validator("field")
     @classmethod

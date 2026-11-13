@@ -48,3 +48,20 @@ def test_registration_accepts_shareable_cv_link():
 
     assert parsed.cv_url == payload["cv_url"]
     assert parsed.cv_consent is True
+
+
+def test_registration_accepts_level_aliases():
+    for value in ["1", "2", "3", "1st", "2nd", "3rd", "L1", "L2", "L3", "year 2"]:
+        parsed = RegistrationIn.model_validate({
+            "type": "student",
+            "first_name": "Alice",
+            "last_name": "Example",
+            "email": "alice@example.com",
+            "phone": "+123456789",
+            "university": "Test University",
+            "field": "engineering",
+            "level": value,
+            "cv_url": "https://drive.google.com/file/d/abc123/view?usp=sharing",
+            "cv_consent": True,
+        })
+        assert parsed.level in {"1", "2", "3"}
