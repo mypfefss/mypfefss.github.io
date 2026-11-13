@@ -212,17 +212,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+const MAX_CV_SIZE_BYTES = 3 * 1024 * 1024;
+
 // CV file input – show/hide consent checkbox and client-side validation
 function initCvInput(form) {
     const cvInput = form.querySelector('#cv');
     const cvError = form.querySelector('#cvError');
     const consentGroup = form.querySelector('#cvConsentGroup');
+    const consentCheckbox = form.querySelector('#cv_consent');
     if (!cvInput) return;
 
     cvInput.addEventListener('change', function() {
         const file = this.files[0];
         if (cvError) cvError.style.display = 'none';
         if (consentGroup) consentGroup.style.display = 'none';
+        if (consentCheckbox) {
+            consentCheckbox.required = false;
+            consentCheckbox.checked = false;
+        }
         if (!file) return;
 
         // Client-side type check (friendly message before sending)
@@ -231,13 +238,14 @@ function initCvInput(form) {
             this.value = '';
             return;
         }
-        // Size check: 2 MB
-        if (file.size > 2 * 1024 * 1024) {
-            if (cvError) { cvError.textContent = 'File is too large. Maximum size is 2 MB.'; cvError.style.display = 'block'; }
+        // Size check: 3 MB
+        if (file.size > MAX_CV_SIZE_BYTES) {
+            if (cvError) { cvError.textContent = 'File is too large. Maximum size is 3 MB.'; cvError.style.display = 'block'; }
             this.value = '';
             return;
         }
         if (consentGroup) consentGroup.style.display = 'block';
+        if (consentCheckbox) consentCheckbox.required = true;
     });
 }
 
@@ -266,8 +274,8 @@ function handleRegistration(form) {
                 submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
                 return;
             }
-            if (cvFile.size > 2 * 1024 * 1024) {
-                if (cvError) { cvError.textContent = 'File is too large. Maximum size is 2 MB.'; cvError.style.display = 'block'; }
+            if (cvFile.size > MAX_CV_SIZE_BYTES) {
+                if (cvError) { cvError.textContent = 'File is too large. Maximum size is 3 MB.'; cvError.style.display = 'block'; }
                 submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
                 return;
             }
@@ -341,6 +349,9 @@ function handleRegistration(form) {
         const modal = document.getElementById('registrationModal');
         if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
         form.reset();
+        const consentGroup = form.querySelector('#cvConsentGroup');
+        if (consentGroup) consentGroup.style.display = 'none';
+        if (consentCheckbox) consentCheckbox.required = false;
         submitBtn.disabled = false;
         submitBtn.textContent = originalBtnText;
         submitBtn.style.opacity = '1';

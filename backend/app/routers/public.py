@@ -13,7 +13,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.config import get_settings
 from app.db import get_session
 from app.models import Registration, ScheduleItem, Workshop
-from app.schemas import RegistrationCreatedOut, VALID_LEVELS, VALID_EXPERIENCE
+from app.schemas import RegistrationCreatedOut, VALID_FIELDS, VALID_LEVELS, VALID_EXPERIENCE
 from app.storage import StorageError, delete_cv, upload_cv, validate_pdf_bytes
 
 router = APIRouter()
@@ -97,7 +97,7 @@ async def create_registration(
     email: str = Form(..., max_length=254),
     phone: str = Form(..., min_length=6, max_length=20),
     university: str = Form(..., max_length=200),
-    field: Optional[str] = Form(None),
+    field: str = Form(..., max_length=200),
     level: str = Form(..., max_length=50),
     graduation: Optional[str] = Form(None),
     workshops: Optional[str] = Form(None),
@@ -122,8 +122,19 @@ async def create_registration(
     # Validation
     if type not in {"student", "company"}:
         raise HTTPException(422, "type must be 'student' or 'company'")
+    first_name = first_name.strip()
+    last_name = last_name.strip()
+    email = email.strip()
+    phone = phone.strip()
+    university = university.strip()
+    field = field.strip()
+    level = level.strip()
+    if not all((first_name, last_name, email, phone, university, field, level)):
+        raise HTTPException(422, "All registration fields are required except the CV")
     if not _EMAIL_RE.match(email):
         raise HTTPException(422, "Invalid email address")
+    if field not in VALID_FIELDS:
+        raise HTTPException(422, "Invalid field of study")
     if level not in VALID_LEVELS:
         raise HTTPException(422, "Invalid level")
     if experience and experience not in VALID_EXPERIENCE:

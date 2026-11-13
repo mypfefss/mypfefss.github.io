@@ -1327,6 +1327,30 @@ h4 { font-size: 1.5rem; }
     border-color: var(--primary-color);
 }
 
+.registration-form .cv-consent-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.registration-form .cv-consent-group {
+    display: none;
+    margin-top: 0.5rem;
+}
+
+.registration-form .cv-consent-checkbox {
+    flex: 0 0 1rem;
+    width: 1rem;
+    height: 1rem;
+    margin: 0.2rem 0 0;
+    padding: 0;
+    accent-color: var(--primary-color);
+}
+
 /* Why Partner Section */
 .why-partner {
     padding: 6rem 0;

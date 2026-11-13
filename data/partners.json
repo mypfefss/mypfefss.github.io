@@ -84,6 +84,12 @@
       "id": 17,
       "name": "Smartvisor",
       "logo": "../assets/images/former-partners/smartvisor.png"
+    },
+    
+    {
+      "id": 18,
+      "name": "Advising LTD",
+      "logo": "../assets/images/former-partners/advising-light-logo.webp"
     }
   ]
 }

@@ -133,11 +133,8 @@ class WorkshopPublicOut(BaseModel):
 # ── Registrations ──────────────────────────────────────────────────────────────
 
 VALID_TYPES = {"student", "company"}
-VALID_LEVELS = {
-    "license-1", "license-2", "license-3",
-    "master-1", "master-2",
-    "engineering", "phd", "graduate",
-}
+VALID_FIELDS = {"pre-engineering", "engineering", "licence", "master"}
+VALID_LEVELS = {"1", "2", "3"}
 VALID_EXPERIENCE = {"none", "internship", "part-time", "full-time"}
 
 
@@ -152,7 +149,7 @@ class RegistrationIn(BaseModel):
     email: EmailStr
     phone: str = Field(min_length=6, max_length=20)
     university: str = Field(max_length=200)
-    field: Optional[str] = Field(default=None, max_length=200)
+    field: str = Field(max_length=200)
     level: str = Field(max_length=50)
     graduation: Optional[str] = Field(default=None, max_length=50)
     workshops: Optional[List[str]] = None
@@ -176,6 +173,13 @@ class RegistrationIn(BaseModel):
     def validate_level(cls, v: str) -> str:
         if v not in VALID_LEVELS:
             raise ValueError(f"level must be one of {VALID_LEVELS}")
+        return v
+
+    @field_validator("field")
+    @classmethod
+    def validate_field(cls, v: str) -> str:
+        if v not in VALID_FIELDS:
+            raise ValueError(f"field must be one of {VALID_FIELDS}")
         return v
 
     @field_validator("experience")
