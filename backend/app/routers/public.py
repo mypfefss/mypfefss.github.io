@@ -18,6 +18,33 @@ router = APIRouter()
 limiter = Limiter(key_func=get_remote_address)
 
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_LEVEL_ALIASES = {
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "1st": "1",
+    "2nd": "2",
+    "3rd": "3",
+    "first": "1",
+    "second": "2",
+    "third": "3",
+    "l1": "1",
+    "l2": "2",
+    "l3": "3",
+    "year 1": "1",
+    "year 2": "2",
+    "year 3": "3",
+}
+
+
+def _normalize_level(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+    normalized = (value or "").strip().lower().replace("_", " ").replace("-", " ")
+    normalized = " ".join(normalized.split())
+    if normalized in {"1", "2", "3"}:
+        return normalized
+    return _LEVEL_ALIASES.get(normalized)
 
 
 # ── Health ─────────────────────────────────────────────────────────────────────
@@ -125,15 +152,16 @@ async def create_registration(
     phone = phone.strip()
     university = university.strip()
     field = field.strip()
-    level = level.strip()
+    normalized_level = _normalize_level(level)
     if not all((first_name, last_name, email, phone, university, field, level)):
         raise HTTPException(422, "All registration fields are required except the CV")
     if not _EMAIL_RE.match(email):
         raise HTTPException(422, "Invalid email address")
     if field not in VALID_FIELDS:
         raise HTTPException(422, "Invalid field of study")
-    if level not in VALID_LEVELS:
+    if normalized_level is None:
         raise HTTPException(422, "Invalid level")
+    level = normalized_level
     if experience and experience not in VALID_EXPERIENCE:
         raise HTTPException(422, "Invalid experience value")
 
