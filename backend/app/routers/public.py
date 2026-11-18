@@ -2,7 +2,7 @@ import json
 import re
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Request
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, File, UploadFile
 from fastapi.responses import JSONResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -130,6 +130,7 @@ async def create_registration(
     experience: Optional[str] = Form(None),
     company_name: Optional[str] = Form(None),
     edition: int = Form(15),
+    cv_file: Optional[UploadFile] = File(None),
     cv_url: Optional[str] = Form(None),
     cv_consent: bool = Form(False),
     website: Optional[str] = Form(None),
@@ -175,21 +176,52 @@ async def create_registration(
         except (ValueError, TypeError):
             workshops_list = [w.strip() for w in workshops.split(",") if w.strip()]
 
-    # CV link handling
+    # CV handling - support both file upload and URL
     cv_key: Optional[str] = None
     cv_original_name: Optional[str] = None
     cv_size: Optional[int] = None
     cv_saved = False
+    normalized_cv_url: Optional[str] = None
 
-    normalized_cv_url = (cv_url or "").strip() if cv_url else None
     if type == "student":
-        if not normalized_cv_url:
-            raise HTTPException(422, "Please provide a shareable CV link.")
-        if not normalized_cv_url.startswith(("http://", "https://")):
-            raise HTTPException(422, "CV link must start with http:// or https://")
+        # Check if file was uploaded
+        if cv_file and cv_file.filename:
+            # Handle file upload
+            cv_data = await cv_file.read()
+            
+            # Import storage functions
+            from app.storage import validate_pdf_bytes, upload_cv
+            from app.config import get_settings
+            settings = get_settings()
+            
+            # Validate the file
+            try:
+                validate_pdf_bytes(cv_data, settings.cv_max_bytes)
+            except ValueError as e:
+                raise HTTPException(422, str(e))
+            
+            # Upload to storage
+            try:
+                cv_key = await upload_cv(cv_data, edition, cv_file.filename)
+                cv_original_name = cv_file.filename
+                cv_size = len(cv_data)
+                cv_saved = True
+            except Exception as e:
+                raise HTTPException(503, f"Could not upload CV: {str(e)}")
+        
+        # If no file, check for URL (backward compatibility)
+        elif cv_url:
+            normalized_cv_url = cv_url.strip()
+            if not normalized_cv_url.startswith(("http://", "https://")):
+                raise HTTPException(422, "CV link must start with http:// or https://")
+            cv_saved = True
+        
+        else:
+            raise HTTPException(422, "Please provide either a CV file or a CV link.")
+        
+        # Check consent
         if not cv_consent:
-            raise HTTPException(422, "You must consent before submitting your CV link.")
-        cv_saved = True
+            raise HTTPException(422, "You must consent before submitting your CV.")
 
     # Persist
     reg = Registration(
@@ -222,6 +254,7 @@ async def create_registration(
         await session.rollback()
         if cv_key:
             try:
+                from app.storage import delete_cv
                 await delete_cv(cv_key)
             except Exception:
                 pass

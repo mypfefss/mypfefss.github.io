@@ -25,11 +25,10 @@ class Settings(BaseSettings):
     admin_email: str = ""
     admin_password: str = ""
 
-    # Google Drive storage for new CV uploads (OAuth, uploads as the MyPFE account)
-    google_client_id: str = ""
-    google_client_secret: str = ""
-    google_refresh_token: str = ""
-    google_drive_folder_id: str = ""
+    # Supabase storage for CV uploads
+    supabase_url: str = ""
+    supabase_service_key: str = ""
+    supabase_bucket_name: str = "cvs"
 
     # Legacy Cloudflare R2 settings (used only for CVs uploaded before migration)
     r2_endpoint_url: str = ""
@@ -51,11 +50,8 @@ class Settings(BaseSettings):
 
     @property
     def storage_configured(self) -> bool:
-        return bool(
-            self.google_client_id
-            and self.google_client_secret
-            and self.google_refresh_token
-        )
+        """Check if Supabase storage is configured."""
+        return bool(self.supabase_url and self.supabase_service_key)
 
 
 @lru_cache

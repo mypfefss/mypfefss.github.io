@@ -212,35 +212,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// CV link input – show/hide consent checkbox and validate the public URL
+// CV file input – show consent checkbox and validate file
 function initCvInput(form) {
-    const cvInput = form.querySelector('#cv_url');
+    const cvInput = form.querySelector('#cv_file');
     const cvError = form.querySelector('#cvError');
     const consentGroup = form.querySelector('#cvConsentGroup');
     const consentCheckbox = form.querySelector('#cv_consent');
     if (!cvInput) return;
 
-    const validateCvUrl = () => {
-        const value = cvInput.value.trim();
+    const validateCvFile = () => {
         if (cvError) cvError.style.display = 'none';
-        if (!value) {
-            if (consentGroup) consentGroup.style.display = 'none';
-            if (consentCheckbox) {
-                consentCheckbox.required = false;
-                consentCheckbox.checked = false;
+        const file = cvInput.files[0];
+        
+        if (!file) {
+            return;
+        }
+        
+        // Validate file type
+        if (file.type !== 'application/pdf') {
+            if (cvError) { 
+                cvError.textContent = 'Please upload a PDF file only.'; 
+                cvError.style.display = 'block'; 
             }
+            cvInput.value = '';
             return;
         }
-        if (!/^https?:\/\//i.test(value)) {
-            if (cvError) { cvError.textContent = 'Please enter a valid shareable CV link starting with http:// or https://'; cvError.style.display = 'block'; }
+        
+        // Validate file size (3MB = 3 * 1024 * 1024 bytes)
+        const maxSize = 3 * 1024 * 1024;
+        if (file.size > maxSize) {
+            if (cvError) { 
+                cvError.textContent = 'File size must not exceed 3MB.'; 
+                cvError.style.display = 'block'; 
+            }
+            cvInput.value = '';
             return;
         }
-        if (consentGroup) consentGroup.style.display = 'block';
-        if (consentCheckbox) consentCheckbox.required = true;
     };
 
-    cvInput.addEventListener('input', validateCvUrl);
-    validateCvUrl();
+    cvInput.addEventListener('change', validateCvFile);
 }
 
 // Registration Form Handling
@@ -256,15 +266,26 @@ function handleRegistration(form) {
         submitBtn.textContent = 'Submitting...';
         submitBtn.style.opacity = '0.7';
 
-        // CV link validation
-        const cvInput = form.querySelector('#cv_url');
+        // CV file validation
+        const cvInput = form.querySelector('#cv_file');
         const cvError = form.querySelector('#cvError');
         const consentCheckbox = form.querySelector('#cv_consent');
-        const cvUrl = cvInput ? cvInput.value.trim() : '';
+        const cvFile = cvInput ? cvInput.files[0] : null;
 
         if (form.querySelector('#academicSection') && form.querySelector('#academicSection').style.display !== 'none') {
-            if (!cvUrl || !/^https?:\/\//i.test(cvUrl)) {
-                if (cvError) { cvError.textContent = 'Please enter a valid shareable CV link.'; cvError.style.display = 'block'; }
+            if (!cvFile) {
+                if (cvError) { cvError.textContent = 'Please upload your CV.'; cvError.style.display = 'block'; }
+                submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
+                return;
+            }
+            if (cvFile.type !== 'application/pdf') {
+                if (cvError) { cvError.textContent = 'Please upload a PDF file only.'; cvError.style.display = 'block'; }
+                submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
+                return;
+            }
+            const maxSize = 3 * 1024 * 1024; // 3MB
+            if (cvFile.size > maxSize) {
+                if (cvError) { cvError.textContent = 'File size must not exceed 3MB.'; cvError.style.display = 'block'; }
                 submitBtn.disabled = false; submitBtn.textContent = originalBtnText; submitBtn.style.opacity = '1';
                 return;
             }
@@ -303,6 +324,9 @@ function handleRegistration(form) {
         fd.delete('workshops');
         fd.append('workshops', JSON.stringify(workshopValues));
         fd.set('cv_consent', consentCheckbox && consentCheckbox.checked ? 'true' : 'false');
+        
+        // Remove cv_file from FormData if present (we'll handle it separately)
+        // The file is already in FormData under 'cv_file' name
 
         try {
             const res = await fetch(apiBase + '/api/v1/registrations', {
@@ -339,8 +363,11 @@ function handleRegistration(form) {
         if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
         form.reset();
         const consentGroup = form.querySelector('#cvConsentGroup');
-        if (consentGroup) consentGroup.style.display = 'none';
-        if (consentCheckbox) consentCheckbox.required = false;
+        if (consentGroup) consentGroup.style.display = 'block';
+        if (consentCheckbox) {
+            consentCheckbox.required = true;
+            consentCheckbox.checked = false;
+        }
         submitBtn.disabled = false;
         submitBtn.textContent = originalBtnText;
         submitBtn.style.opacity = '1';
