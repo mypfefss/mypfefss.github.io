@@ -1,4 +1,21 @@
 {
+  "currentPartners": [
+    {
+      "id": 1,
+      "name": "OliveSoft",
+      "logo": "../assets/images/former-partners/olivesoft-logo_0.svg"
+    },
+    {
+      "id": 2,
+      "name": "Piximind",
+      "logo": "../assets/images/former-partners/piximind.svg"
+    },
+    {
+      "id": 3,
+      "name": "Advising LTD",
+      "logo": "../assets/images/former-partners/advising-light-logo.webp"
+    }
+  ],
   "formerPartners": [
     {
       "id": 1,
@@ -80,12 +97,11 @@
       "name": "Technopole",
       "logo": "../assets/images/former-partners/technopole.png"
     },
-        {
+    {
       "id": 17,
       "name": "Smartvisor",
       "logo": "../assets/images/former-partners/smartvisor.png"
     },
-    
     {
       "id": 18,
       "name": "Advising LTD",

@@ -762,7 +762,8 @@ async function loadFormerPartners() {
             }
         }
         
-        if (data && data.formerPartners && Array.isArray(data.formerPartners)) {
+        if (data && Array.isArray(data.currentPartners) && Array.isArray(data.formerPartners)) {
+            displayCurrentPartners(data.currentPartners);
             displayFormerPartners(data.formerPartners);
         } else {
             console.warn('No partners data found, using fallback');
@@ -790,28 +791,35 @@ function addPartnerHoverEffects() {
 }
 
 
-// Load partners when page loads (only on sponsors page)
+// Load partners when page loads.
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if we're on the sponsors/partners page
-    if (window.location.pathname.includes('sponsors.html') || 
+    // Check if we're on the partners page
+    if (window.location.pathname.includes('partners.html') ||
         document.querySelector('.former-partners')) {
         loadFormerPartners();
     }
 });
 
 function displayFormerPartners(partners) {
-    const container = document.querySelector('.partners-grid');
+    displayPartnerList(partners, '.partners-grid', '');
+}
+
+function displayCurrentPartners(partners) {
+    displayPartnerList(partners, '.current-partners-grid', 'current-partner-logo');
+}
+
+function displayPartnerList(partners, selector, cardClass) {
+    const container = document.querySelector(selector);
     if (!container) {
-        console.warn('Partners grid container not found');
+        console.warn('Partner grid container not found:', selector);
         return;
     }
     
     const html = partners.map((partner, index) => `
-        <div class="partner-logo scroll-reveal delay-${Math.min(index + 1, 6)}" data-category="${partner.category}" data-year="${partner.year}">
-            <img src="${partner.logo}" alt="${partner.name}" title="${partner.name} - ${partner.category}">
+        <div class="partner-logo ${cardClass} partner-logo--${partner.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')} scroll-reveal delay-${Math.min(index + 1, 6)}">
+            <img src="${partner.logo}" alt="${partner.name}" title="${partner.name}">
             <div class="partner-info">
                 <h4>${partner.name}</h4>
-                
             </div>
         </div>
     `).join('');
@@ -867,10 +875,10 @@ function displayPartnersFallback() {
     }, 100);
 }
 
-// Load partners when page loads (only on sponsors page)
+// Load partners when page loads.
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if we're on the sponsors/partners page
-    if (window.location.pathname.includes('sponsors.html') || 
+    // Check if we're on the partners page
+    if (window.location.pathname.includes('partners.html') ||
         document.querySelector('.former-partners')) {
         loadFormerPartners();
     }

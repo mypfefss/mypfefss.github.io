@@ -22,7 +22,7 @@
                 <a href="../index.html" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About</a>
                 <a href="program.html" class="nav-link active">Program</a>
-                <a href="sponsors.html" class="nav-link">Partners</a>
+                <a href="partners.html" class="nav-link">Partners</a>
                 <a href="contact.html" class="nav-link">Contact</a>
                 <button class="nav-link btn-primary btn register-btn" data-type="student">Register Now</button>
             </div>
@@ -56,18 +56,6 @@
         </div>
     </section>
 
-    <!-- Last edition, for reference -->
-    <section class="tl-section tl-past">
-        <div class="container">
-            <div class="section-header">
-                <span class="tl-badge">Last edition</span>
-                <h2 id="pastTitle">MyPFE 14.0</h2>
-                <p id="pastMeta"></p>
-            </div>
-            <div class="tl" id="timelinePast"></div>
-        </div>
-    </section>
-
 <!-- Workshops -->
 <section class="workshop-details">
     <div class="container">
@@ -95,7 +83,7 @@
                 <p>November 21, 2026 · Faculty of Sciences of Sfax</p>
                 <div class="cta-buttons">
                     <button class="btn register-btn" data-type="student">Register Now</button>
-                    <a href="sponsors.html" class="btn btn-outline">Become a Partner</a>
+                    <a href="partners.html" class="btn btn-outline">Become a Partner</a>
                 </div>
             </div>
         </div>
@@ -194,11 +182,6 @@
         }
 
         loadTimeline('/api/v1/schedule', '../data/schedule.json', 'timeline', 'Schedule coming soon.');
-        loadTimeline(null, '../data/schedule-2025.json', 'timelinePast', 'Not available.').then(d => {
-            if (!d) { document.querySelector('.tl-past').style.display = 'none'; return; }
-            document.getElementById('pastTitle').textContent = d.edition || 'Last edition';
-            document.getElementById('pastMeta').textContent = [d.date, d.location].filter(Boolean).join(' · ');
-        });
     </script>
 </body>
 </html>

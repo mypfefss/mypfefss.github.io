@@ -2974,6 +2974,70 @@ h4 { font-size: 1.5rem; }
     transform: translateY(0);
 }
 
+/* MyPFE 15.0 current partner showcase */
+.current-partners {
+    padding: 80px 0;
+    background: #f8fafc;
+}
+
+.current-partners-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1050px;
+    margin: 3rem auto 0;
+}
+
+.current-partners .partner-logo {
+    max-width: 100%;
+    min-height: 300px;
+    padding: 2.5rem;
+    gap: 1.25rem;
+}
+
+.current-partners .partner-logo:hover {
+    justify-content: center;
+    padding-top: 2.5rem;
+}
+
+.current-partners .partner-logo img {
+    width: min(100%, 360px);
+    height: 190px;
+    filter: none;
+}
+
+.current-partners .partner-info {
+    opacity: 1;
+    transform: none;
+}
+
+.current-partners .partner-info h4 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.current-partners .partner-logo--olivesoft {
+    background: #101820;
+}
+
+.current-partners .partner-logo--olivesoft .partner-info h4 {
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .current-partners-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .current-partners .partner-logo {
+        min-height: 250px;
+    }
+
+    .current-partners .partner-logo img {
+        height: 150px;
+    }
+}
+
 
 
 .scroll-reveal-left {
