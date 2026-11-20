@@ -433,3 +433,42 @@
     color: var(--text-color);
     font-size: 0.78rem;
 }
+
+/* ---------- Past partners marquee ---------- */
+.marquee-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+.marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+    animation: partners-marquee 32s linear infinite;
+}
+.marquee-wrapper:hover .marquee-track {
+    animation-play-state: paused;
+}
+.marquee-item {
+    flex: 0 0 180px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.5rem;
+}
+.marquee-item img {
+    display: block;
+    width: 150px;
+    max-width: 150px;
+    height: 74px;
+    max-height: 74px;
+    object-fit: contain;
+}
+@keyframes partners-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+}
