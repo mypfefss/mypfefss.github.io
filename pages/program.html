@@ -149,19 +149,24 @@
             const box = document.getElementById(boxId);
             let data = null;
 
-            // 1. Try API
+            // 1. Try API, but only use it when it contains schedule items.
             const base = typeof API_BASE !== 'undefined' ? API_BASE : '';
             if (base) {
                 try {
                     const res = await fetch(base + apiPath, { headers: { 'Cache-Control': 'no-cache' } });
-                    if (res.ok) data = await res.json();
+                    if (res.ok) {
+                        const apiData = await res.json();
+                        if (apiData && Array.isArray(apiData.schedule) && apiData.schedule.length) {
+                            data = apiData;
+                        }
+                    }
                 } catch (_) {}
             }
 
-            // 2. Fall back to local JSON
+            // 2. Fall back to local JSON when the API is empty or unavailable.
             if (!data) {
                 try {
-                    const res = await fetch(fallbackUrl);
+                    const res = await fetch(`${fallbackUrl}?v=${Date.now()}`, { cache: 'no-store' });
                     if (res.ok) data = await res.json();
                 } catch (_) {}
             }
