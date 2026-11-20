@@ -1417,7 +1417,12 @@ h4 { font-size: 1.5rem; }
 
 .former-partners {
     padding: 80px 0;
-    background: #f8fafc;
+    background: #fff;
+}
+
+.current-partners {
+    padding: 80px 0;
+    background: #fff;
 }
 
 .partners-grid {
@@ -1426,11 +1431,6 @@ h4 { font-size: 1.5rem; }
     gap: 1.25rem;
     max-width: 900px;
     margin: 2.5rem auto 0;
-}
-
-.current-partners {
-    padding: 80px 0;
-    background: #f8fafc;
 }
 
 .current-partners-grid {
@@ -1443,7 +1443,7 @@ h4 { font-size: 1.5rem; }
 }
 
 .partner-logo {
-    background: var(--background-light);
+    background: #fff;
     padding: 2rem;
     border-radius: 12px;
     text-align: center;
@@ -1489,4 +1489,13 @@ h4 { font-size: 1.5rem; }
 .current-partners .partner-info h4 {
     margin: 0;
     font-size: 1rem;
+}
+
+/* Restore OliveSoft's dark card background and white title text */
+.partner-logo--olivesoft {
+    background: #101820;
+}
+
+.partner-logo--olivesoft .partner-info h4 {
+    color: #fff;
 }
