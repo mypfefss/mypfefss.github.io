@@ -921,21 +921,26 @@ async function loadWorkshops() {
     try {
         let data = null;
 
-        // 1. Try API
+        // 1. Try API, but only use it when it contains workshops.
         const base = typeof API_BASE !== 'undefined' ? API_BASE : '';
         if (base) {
             try {
-                const res = await fetch(base + '/api/v1/workshops');
-                if (res.ok) data = await res.json();
+                const res = await fetch(base + '/api/v1/workshops', { headers: { 'Cache-Control': 'no-cache' } });
+                if (res.ok) {
+                    const apiData = await res.json();
+                    if (apiData && Array.isArray(apiData.workshops) && apiData.workshops.length) {
+                        data = apiData;
+                    }
+                }
             } catch (_) {}
         }
 
-        // 2. Fall back to local JSON
+        // 2. Fall back to fresh local JSON when the API is empty or unavailable.
         if (!data) {
             const possiblePaths = ['./data/workshops.json', '../data/workshops.json', '/data/workshops.json'];
             for (const path of possiblePaths) {
                 try {
-                    const response = await fetch(path);
+                    const response = await fetch(`${path}?v=${Date.now()}`, { cache: 'no-store' });
                     if (response.ok) { data = await response.json(); break; }
                 } catch (_) { continue; }
             }
