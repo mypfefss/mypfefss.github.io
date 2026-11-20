@@ -601,16 +601,15 @@ document.addEventListener('DOMContentLoaded', function() {
 // Workshop Card Animations
 document.addEventListener('DOMContentLoaded', function() {
     const workshopCards = document.querySelectorAll('.workshop-card');
-    
     workshopCards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-        
-        card.addEventListener('mouseenter', function() {
-            this.querySelector('.workshop-icon').style.transform = 'rotateY(180deg)';
+        card.style.transitionDelay = `${index * 0.1}s`;
+        card.addEventListener('mouseenter', function () {
+            const icon = this.querySelector('.workshop-icon');
+            if (icon) icon.style.transform = 'rotateY(180deg)';
         });
-        
-        card.addEventListener('mouseleave', function() {
-            this.querySelector('.workshop-icon').style.transform = 'rotateY(0)';
+        card.addEventListener('mouseleave', function () {
+            const icon = this.querySelector('.workshop-icon');
+            if (icon) icon.style.transform = 'rotateY(0)';
         });
     });
 });
@@ -960,19 +959,24 @@ function displayWorkshops(workshops) {
     }
     
     const html = workshops.map((workshop, index) => `
-        <div class="workshop-card scroll-reveal delay-${Math.min(index + 1, 6)}">
-            <div class="workshop-icon">
-                <i class="${workshop.icon}"></i>
+        <article class="workshop-card scroll-reveal delay-${Math.min(index + 1, 6)}">
+            <div class="workshop-number">0${index + 1}</div>
+            <div class="workshop-main">
+                <div class="workshop-heading">
+                    <div class="workshop-icon"><i class="${workshop.icon}"></i></div>
+                    <div>
+                        <p class="workshop-time"><i class="fas fa-clock"></i> ${workshop.time}</p>
+                        <h3>${workshop.title}</h3>
+                    </div>
+                </div>
+                <p class="workshop-description">${workshop.description}</p>
             </div>
-            <h3>${workshop.title}</h3>
-            <p class="workshop-time">${workshop.time}</p>
-            <p>${workshop.description}</p>
             <div class="workshop-info">
                 ${workshop.features.map(feature => `
                     <span><i class="${feature.icon}"></i> ${feature.text}</span>
                 `).join('')}
             </div>
-        </div>
+        </article>
     `).join('');
     
     container.innerHTML = html;

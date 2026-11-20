@@ -838,11 +838,25 @@ async function loadRegistrations() {
   regTotal = data.total;
   renderRegTable(data.items);
   renderPagination();
+}
 
-  // CV count in stats box (count from current full load)
-  const cvCount = data.items.filter(r => r.has_cv).length;
-  const statCvs = document.getElementById('statCvs');
-  if (statCvs) statCvs.textContent = `${cvCount}+`;
+function createCvLink(url, label = 'Open CV link') {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol)) return null;
+    const link = document.createElement('a');
+    link.className = 'cv-url-link';
+    link.href = parsed.href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = label;
+    link.title = parsed.href;
+    link.addEventListener('click', e => e.stopPropagation());
+    return link;
+  } catch {
+    return null;
+  }
 }
 
 function renderRegTable(items) {
@@ -880,9 +894,12 @@ function renderRegTable(items) {
     cell(r.university);
     cell(r.level);
 
-    // CV cell
+    // Prefer the shareable link; retain downloads for legacy uploaded CVs.
     const cvTd = document.createElement('td');
-    if (r.has_cv) {
+    const cvLink = createCvLink(r.cv_url, 'Open CV ↗');
+    if (cvLink) {
+      cvTd.appendChild(cvLink);
+    } else if (r.has_cv) {
       const dlBtn = document.createElement('button');
       dlBtn.className = 'btn-icon';
       dlBtn.title = 'Download CV';
@@ -949,6 +966,17 @@ function renderRegTable(items) {
       detailTd.appendChild(chip);
     });
 
+    const detailCvLink = createCvLink(r.cv_url);
+    if (detailCvLink) {
+      const chip = document.createElement('span');
+      chip.className = 'registration-detail-chip';
+      const lbl = document.createElement('span');
+      lbl.className = 'registration-detail-label';
+      lbl.textContent = 'CV link:';
+      chip.append(lbl, detailCvLink);
+      detailTd.appendChild(chip);
+    }
+
     detailTr.appendChild(detailTd);
     tr.addEventListener('click', () => { detailTr.hidden = !detailTr.hidden; });
 
@@ -979,7 +1007,7 @@ async function deleteCv(regId) {
 }
 
 async function deleteRegistration(r) {
-  const ok = await confirm('Delete registration', `Delete registration for ${r.first_name} ${r.last_name}? This also removes their CV.`);
+  const ok = await confirm('Delete registration', `Delete registration for ${r.first_name} ${r.last_name}? This also removes the stored CV link and any legacy uploaded CV file.`);
   if (!ok) return;
   const res = await api('/api/v1/admin/registrations/' + r.id, { method: 'DELETE' });
   if (res && res.status === 204) { toast('Deleted'); loadRegistrations(); loadStats(); }

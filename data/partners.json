@@ -14,6 +14,36 @@
       "id": 3,
       "name": "Advising LTD",
       "logo": "../assets/images/former-partners/advising-light-logo.webp"
+    },
+    {
+      "id": 4,
+      "name": "Visiora AI",
+      "logo": "../assets/images/former-partners/visioraai.png"
+    },
+    {
+      "id": 5,
+      "name": "Orange",
+      "logo": "../assets/images/former-partners/orange.png"
+    },
+    {
+      "id": 6,
+      "name": "Diwan Sport",
+      "logo": "../assets/images/former-partners/diwan-sport.jpeg"
+    },
+    {
+      "id": 7,
+      "name": "Miral Development",
+      "logo": "../assets/images/former-partners/miraldev.png"
+    },
+    {
+      "id": 8,
+      "name": "PEES",
+      "logo": "../assets/images/former-partners/Logo PEES coloré sur fond transparent.png"
+    },
+    {
+      "id": 9,
+      "name": "Finlogik",
+      "logo": "../assets/images/former-partners/finlogik.png"
     }
   ],
   "formerPartners": [
@@ -101,11 +131,6 @@
       "id": 17,
       "name": "Smartvisor",
       "logo": "../assets/images/former-partners/smartvisor.png"
-    },
-    {
-      "id": 18,
-      "name": "Advising LTD",
-      "logo": "../assets/images/former-partners/advising-light-logo.webp"
     }
   ]
 }

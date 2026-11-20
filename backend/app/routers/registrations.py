@@ -180,7 +180,7 @@ async def export_csv(session: AsyncSession = Depends(get_session)):
         "id", "type", "first_name", "last_name", "email", "phone",
         "university", "field", "level", "graduation", "workshops",
         "interests", "experience", "company_name", "edition",
-        "has_cv", "cv_consent", "created_at",
+        "cv_url", "has_cv", "cv_consent", "created_at",
     ])
     for r in rows:
         writer.writerow([
@@ -199,6 +199,7 @@ async def export_csv(session: AsyncSession = Depends(get_session)):
             _csv_safe(r.experience or ""),
             _csv_safe(r.company_name or ""),
             _csv_safe(str(r.edition)),
+            _csv_safe(r.cv_url or ""),
             _csv_safe("yes" if (r.cv_url or r.cv_key) else "no"),
             _csv_safe("yes" if r.cv_consent else "no"),
             _csv_safe(r.created_at.isoformat()),

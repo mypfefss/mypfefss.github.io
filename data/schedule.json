@@ -1,13 +1,80 @@
 {
+  "edition": "MyPFE 15.0",
+  "date": "Saturday, November 21, 2026",
+  "location": "Amphi 9, Computer Science and Communications Department, Faculty of Sciences of Sfax",
   "schedule": [
     {
-      "time": "November 21, 2026",
-      "title": "MyPFE 15.0",
-      "description": "Stay tuned",
-      "speaker": null,
-      "location": "Faculty of Sciences of Sfax",
-      "tags": null,
-      "featured": true
+      "time": "09:30 – 13:00",
+      "title": "Company Booth Visits",
+      "location": "Amphi 9",
+      "chips": ["Olivesoft", "Piximind", "Advising LTD", "VisioraAI"]
+    },
+    {
+      "time": "10:00",
+      "title": "Opening",
+      "featured": true,
+      "location": "Amphi 9"
+    },
+    {
+      "time": "10:10",
+      "title": "Talks",
+      "location": "Amphi 9",
+      "sections": [
+        { "lines": [
+          { "text": "How to succeed your internship", "sub": "Bochra Gargouri, Director of Internships – FSS" },
+          { "text": "Student-Entrepreneur status", "sub": "Donia Louizi, Head of Student Entrepreneur Pole, University of Sfax" },
+          { "text": "Develop your Professional Skills with DataCamp", "sub": "Corinne Amel Zayani, Director of 4C – FSS" },
+          { "text": "Your First Job Starts Before Graduation: How to Prepare for the Tech Industry", "sub": "Mootez Zouari, AI Engineer @Miral Development" }
+        ]}
+      ]
+    },
+    {
+      "time": "11:00",
+      "title": "Panel Discussion: How to Succeed in Today's Job Market?",
+      "featured": true,
+      "location": "Amphi 9",
+      "sections": [
+        { "label": "Panelists", "lines": [
+          { "text": "Fetah Krichen", "sub": "CEO, Diwan Sport" },
+          { "text": "Mohamed Anouar Abid", "sub": "CEO and Founder, Advising LTD" },
+          { "text": "Majdi Ben Farhat", "sub": "CEO, i'Tri" },
+          { "text": "Hedi Aloulou", "sub": "DevOps Engineer, Olivesoft" }
+        ]}
+      ]
+    },
+    {
+      "time": "11:20",
+      "title": "Company Activities and Internship Opportunities",
+      "location": "Amphi 9",
+      "sections": [
+        { "lines": [
+          { "text": "Piximind", "sub": "Zaher Kammoun, HR Manager" },
+          { "text": "VisioraAI", "sub": "Yassine Affes, CEO" },
+          { "text": "Advising LTD", "sub": "Mohamed Anouar Abid, CEO and Founder" },
+          { "text": "Finlogik", "sub": "Hana Hmani, HR Manager" },
+          { "text": "DefensyLab", "sub": "To be confirmed" },
+          { "text": "OliveSoft", "sub": "Wissem Hamza, Technical Manager & Oussema Besbes, Team Lead" },
+          { "text": "Orange", "sub": "Ahlem Amdouni, HR Talents Manager" }
+        ]}
+      ]
+    },
+    {
+      "time": "12:20",
+      "title": "Technical Workshops",
+      "featured": true,
+      "location": "Amphi 9",
+      "sections": [
+        { "lines": [
+          { "text": "React.js Live Coding Workshop", "sub": "Wissem Chabchoub, Piximind" },
+          { "text": "Cybersecurity: Challenges, Threats and Opportunities", "sub": "Dhia Chelly, Piximind" },
+          { "text": "Réussir son entretien de stage : les clés pour convaincre", "sub": "Zaher Kammoun, Piximind" }
+        ]}
+      ]
+    },
+    {
+      "time": "13:00",
+      "title": "Thanks to Our Partners",
+      "location": "Amphi 9"
     }
   ]
 }

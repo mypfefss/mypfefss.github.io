@@ -131,6 +131,15 @@ button { cursor: pointer; font-family: inherit; }
   background: #e1f4ef;
 }
 .btn-icon.danger:hover { color: var(--danger); background: #fee2e2; }
+.cv-url-link {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cv-url-link:hover { text-decoration: underline; }
+.registration-detail-chip { display: inline-block; margin: 0 1rem .25rem 0; }
+.registration-detail-label { color: var(--text-muted); margin-right: .25rem; }
 
 /* ── Forms ─────────────────────────────────────────────────────────────────── */
 .field { display: flex; flex-direction: column; gap: .35rem; }

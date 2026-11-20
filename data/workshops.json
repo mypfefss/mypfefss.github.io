@@ -2,38 +2,38 @@
   "workshops": [
     {
       "id": 1,
-      "title": "Featured Workshops",
-      "time": "Coming Soon",
-      "description": "Stay tuned",
-      "icon": "fas fa-clock",
+      "title": "React.js Live Coding Workshop",
+      "time": "12:20",
+      "description": "A hands-on live coding session covering practical React.js concepts.",
+      "icon": "fas fa-code",
       "features": [
-        { "icon": "fas fa-calendar", "text": "November 22, 2025" },
-        { "icon": "fas fa-map-marker-alt", "text": "Faculty of Sciences" },
-        { "icon": "fas fa-users", "text": "Expert Instructors" }
+        { "icon": "fas fa-user-tie", "text": "Wissem Chabchoub, Piximind" },
+        { "icon": "fas fa-calendar", "text": "November 21, 2026" },
+        { "icon": "fas fa-map-marker-alt", "text": "Amphi 9, FSS" }
       ]
     },
-     {
-      "id": 1,
-      "title": "Featured Workshops",
-      "time": "Coming Soon",
-      "description": "Stay tuned",
-      "icon": "fas fa-clock",
+    {
+      "id": 2,
+      "title": "Cybersecurity: Challenges, Threats and Opportunities",
+      "time": "12:20",
+      "description": "Explore today's cybersecurity challenges, threats, and professional opportunities.",
+      "icon": "fas fa-shield-alt",
       "features": [
-        { "icon": "fas fa-calendar", "text": "November 22, 2025" },
-        { "icon": "fas fa-map-marker-alt", "text": "Faculty of Sciences" },
-        { "icon": "fas fa-users", "text": "Expert Instructors" }
+        { "icon": "fas fa-user-tie", "text": "Dhia Chelly, Piximind" },
+        { "icon": "fas fa-calendar", "text": "November 21, 2026" },
+        { "icon": "fas fa-map-marker-alt", "text": "Amphi 9, FSS" }
       ]
     },
-     {
-      "id": 1,
-      "title": "Featured Workshops",
-      "time": "Coming Soon",
-      "description": "Stay tuned",
-      "icon": "fas fa-clock",
+    {
+      "id": 3,
+      "title": "Réussir son entretien de stage : les clés pour convaincre",
+      "time": "12:20",
+      "description": "Learn practical techniques to prepare for and succeed in a stage interview.",
+      "icon": "fas fa-comments",
       "features": [
-        { "icon": "fas fa-calendar", "text": "November 22, 2025" },
-        { "icon": "fas fa-map-marker-alt", "text": "Faculty of Sciences" },
-        { "icon": "fas fa-users", "text": "Expert Instructors" }
+        { "icon": "fas fa-user-tie", "text": "Zaher Kammoun, Piximind" },
+        { "icon": "fas fa-calendar", "text": "November 21, 2026" },
+        { "icon": "fas fa-map-marker-alt", "text": "Amphi 9, FSS" }
       ]
     }
   ]
